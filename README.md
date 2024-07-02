@@ -1,0 +1,21 @@
+# hhplus_concert_service (3주차)
+
+<br><br>
+## SETP5 
+- 시나리오 선정  및 프로젝트 Milestone 제출
+- 시나리오 요구사항 분석 자료 제출 => 시퀀스 다이어그램
+
+### 프로젝트 milestone
+<img width="1131" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/e2ddb35f-9e96-4a70-ab08-9c74899c7e9c">
+
+
+### 시퀀스 다이어그램
+
+<br><br>
+
+## STEP6
+- ERP 다이어그램 작성
+- API 명세 및 Mock API 작성
+
+### ERP 다이어그램
+<img width="1092" alt="ERD다이어그램" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/907c3b66-286d-4a0f-b2b8-b82e34593824">
