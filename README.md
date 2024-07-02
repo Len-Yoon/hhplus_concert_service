@@ -11,7 +11,7 @@
 
 
 ### 시퀀스 다이어그램
-
+![Untitled (1)](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/683629f7-6ce6-4a03-94e9-f162591d716b)
 <br><br>
 
 ## STEP6
@@ -20,3 +20,4 @@
 
 ### ERP 다이어그램
 <img width="1092" alt="ERD다이어그램" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/907c3b66-286d-4a0f-b2b8-b82e34593824">
+
