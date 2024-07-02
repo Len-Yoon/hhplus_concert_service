@@ -11,7 +11,7 @@
 
 
 ### 시퀀스 다이어그램
-![Untitled (1)](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/683629f7-6ce6-4a03-94e9-f162591d716b)
+![Untitled (1)](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/ff3bc3e6-75db-4f75-999d-219bdf796828)
 <br><br>
 
 ## STEP6
