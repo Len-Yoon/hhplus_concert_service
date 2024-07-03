@@ -7,8 +7,7 @@
 - 시나리오 요구사항 분석 자료 제출 => 시퀀스 다이어그램
 
 ### 프로젝트 milestone
-<img width="1131" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/e2ddb35f-9e96-4a70-ab08-9c74899c7e9c">
-
+<img width="1187" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/0d0c5061-7f17-49e8-b28a-55ebc75f38b4">
 
 ### 시퀀스 다이어그램
 ![Untitled (1)](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/ff3bc3e6-75db-4f75-999d-219bdf796828)
