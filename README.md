@@ -10,7 +10,7 @@
 <img width="1187" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/0d0c5061-7f17-49e8-b28a-55ebc75f38b4">
 
 ### 시퀀스 다이어그램
-![Untitled (1)](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/ff3bc3e6-75db-4f75-999d-219bdf796828)
+<img width="521" alt="유스케이스 예시" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/d0a3b4a0-040b-48c1-8bd6-1ade75a26e35">
 <br><br>
 
 ## STEP6
@@ -24,16 +24,23 @@
 <b>토큰</b><br>
 - POST "/token/issuance" -> 토큰 발급 API
 - GET "/token/check" -> 토큰 조회 API(대기열 정보 확인)
+- POST "token/delete" -> 토큰 무효화 API
 <br><br>
+
 <b>예약</b><br>
 - GET "/reservation/checkDate" -> 예약 가능 날짜 조회 API
-- GET "/reservation/checkSeat" -> 예약 가능 날짜 조회 API
+- GET "/reservation/checkSeat" -> 예약 가능 좌석 조회 API
+- POST "/reservation/saveTemporaryReservation" -> 임시 예약 저장 API
+- POST "/reservation/saveReservation" -> 예약 저장 API
 <br><br>
+
 <b>포인트</b><br>
 - GET "/point/checkPoint" -> 포인트 조회 API
 - POST "/point/chargePoint" -> 포인트 충전 API
+- POST "/point/deductedPoint -> 포인트 차감 API
 <br>
+
 <b>결제</b><br>
--POST "/payment" -> 결제 API
+- POST "/payment" -> 결제 API
 
   
