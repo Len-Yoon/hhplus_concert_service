@@ -21,19 +21,19 @@
 <img width="946" alt="ERD다이어그램" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/9b6bd0c4-7b8d-4537-8285-f7a9805a8862">
 
 ### API 명세
-<b>토큰</b>
+<b>토큰</b><br>
 - POST "/token/issuance" -> 토큰 발급 API
 - GET "/token/check" -> 토큰 조회 API(대기열 정보 확인)
-<br>
-<b>예약</b>
+<br><br>
+<b>예약</b><br>
 - GET "/reservation/checkDate" -> 예약 가능 날짜 조회 API
 - GET "/reservation/checkSeat" -> 예약 가능 날짜 조회 API
-<br>
-<b>포인트</b>
+<br><br>
+<b>포인트</b><br>
 - GET "/point/checkPoint" -> 포인트 조회 API
 - POST "/point/chargePoint" -> 포인트 충전 API
 <br>
-<b>결제</b>
+<b>결제</b><br>
 -POST "/payment" -> 결제 API
 
   
