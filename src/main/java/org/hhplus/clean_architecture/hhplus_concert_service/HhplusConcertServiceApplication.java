@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HhplusConcertServiceApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(HhplusConcertServiceApplication.class, args);
     }
 
