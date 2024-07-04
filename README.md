@@ -22,25 +22,22 @@
 
 ### API 명세
 <b>토큰</b><br>
-- POST "/token/issuance" -> 토큰 발급 API
-- GET "/token/check" -> 토큰 조회 API(대기열 정보 확인)
-- POST "token/delete" -> 토큰 무효화 API
+<img width="712" alt="tokenApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/06dfd17d-6def-41b9-8069-09a3f93f5836">
+
 <br><br>
 
 <b>예약</b><br>
-- GET "/reservation/checkDate" -> 예약 가능 날짜 조회 API
-- GET "/reservation/checkSeat" -> 예약 가능 좌석 조회 API
-- POST "/reservation/saveTemporaryReservation" -> 임시 예약 저장 API
-- POST "/reservation/saveReservation" -> 예약 저장 API
+<img width="876" alt="reservationApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/d0f572fa-8f60-46c7-bc1c-6bf2cf43be95">
+
 <br><br>
 
 <b>포인트</b><br>
-- GET "/point/checkPoint" -> 포인트 조회 API
-- POST "/point/chargePoint" -> 포인트 충전 API
-- POST "/point/deductedPoint -> 포인트 차감 API
+<img width="873" alt="pointApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/39df2ccb-f053-4d55-a03c-1123b84b82f1">
+
 <br>
 
 <b>결제</b><br>
-- POST "/payment" -> 결제 API
+<img width="728" alt="paymentApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/f6ddd3bf-f97d-4c1f-b26c-8fd6bc851ea6">
+
 
   
