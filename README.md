@@ -22,7 +22,7 @@
 
 ### API 명세
 <b>토큰</b><br>
-<img width="712" alt="tokenApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/06dfd17d-6def-41b9-8069-09a3f93f5836">
+<img width="712" alt="tokenApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/dd79c824-0823-4f8e-af73-c9c452325136">
 
 <br><br>
 
