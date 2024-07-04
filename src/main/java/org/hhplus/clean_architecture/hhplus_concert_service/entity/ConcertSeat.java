@@ -23,4 +23,5 @@ public class ConcertSeat {
     private LocalDateTime perpormenceAt;
     private String status;
     private LocalDateTime createAt;
+
 }
