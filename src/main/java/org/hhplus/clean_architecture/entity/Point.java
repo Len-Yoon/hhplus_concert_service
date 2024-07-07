@@ -1,4 +1,4 @@
-package org.hhplus.clean_architecture.hhplus_concert_service.entity;
+package org.hhplus.clean_architecture.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,16 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Data
-@Table(name = "token")
+@Table(name = "Point")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Token {
+public class Point {
     @Id
-    private int tokenId;
-    private String userId;
-    private LocalDateTime createAt;
+    private int point_id;
+    private String user_id;
+    private int point;
 }
