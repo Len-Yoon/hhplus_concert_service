@@ -19,7 +19,7 @@
 - Mock API 작성
 
 ### ERP 다이어그램
-0<img width="555" alt="ERD다이어그램2" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/96fa2279-1df7-4c25-8666-210e5590d3ae">
+<img width="548" alt="ERD다이어그램2" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/58a7d2c9-6e43-4552-baf3-33569eba151a">
 
 
 ### API 명세
