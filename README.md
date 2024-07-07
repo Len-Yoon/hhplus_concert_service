@@ -10,7 +10,8 @@
 <img width="1187" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/0d0c5061-7f17-49e8-b28a-55ebc75f38b4">
 
 ### 시퀀스 다이어그램
-<img width="521" alt="유스케이스 예시" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/d0a3b4a0-040b-48c1-8bd6-1ade75a26e35">
+![유스케이스 예시2](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/2f783e86-a57c-4477-9f82-7a70472ce33d)
+
 <br><br>
 
 ## STEP6
