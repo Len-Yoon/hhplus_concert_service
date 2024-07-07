@@ -1,4 +1,4 @@
-package org.hhplus.clean_architecture.entity;
+package org.hhplus.hhplus_concert_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,13 +11,17 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "payment")
+@Table(name = "reservation")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+public class Reservation {
     @Id
-    private int payment_id;
     private int reservation_id;
-    private int payment_amount;
+    private String user_id;
+    private int concert_id;
+    private int seat_id;
+    private int item_id;
+    private int total_price;
+    private String status;
     private LocalDateTime created_at;
 }

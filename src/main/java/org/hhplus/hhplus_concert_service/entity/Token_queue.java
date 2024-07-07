@@ -1,4 +1,4 @@
-package org.hhplus.clean_architecture.entity;
+package org.hhplus.hhplus_concert_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table (name = "concert_item")
+@Table(name = "token_queue")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Concert_item {
+public class Token_queue {
     @Id
-    private int item_id;
-    private int concert_id;
-    private LocalDateTime concert_date;
+    private int queue_id;
+    private int token_id;
+    private boolean status;
+    private LocalDateTime created_at;
 }

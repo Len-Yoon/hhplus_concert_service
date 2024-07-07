@@ -1,4 +1,4 @@
-package org.hhplus.clean_architecture.entity;
+package org.hhplus.hhplus_concert_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name = "concert_seat")
+@Table(name = "Point")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Concert_seat {
+public class Point {
     @Id
-    private int seat_id;
-    private int item_id;
-    private int seat_num;
-    private String status;
-    private int seat_price;
+    private int point_id;
+    private String user_id;
+    private int point;
 }
