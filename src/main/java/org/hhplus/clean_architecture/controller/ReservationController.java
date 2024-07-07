@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("point")
+@RequestMapping("reservation")
 @RequiredArgsConstructor
-public class Point {
+public class ReservationController {
 
 }
