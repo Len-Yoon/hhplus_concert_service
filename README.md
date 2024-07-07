@@ -10,7 +10,8 @@
 <img width="1187" alt="마일스톤" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/0d0c5061-7f17-49e8-b28a-55ebc75f38b4">
 
 ### 시퀀스 다이어그램
-<img width="521" alt="유스케이스 예시" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/d0a3b4a0-040b-48c1-8bd6-1ade75a26e35">
+![유스케이스 예시2](https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/2f783e86-a57c-4477-9f82-7a70472ce33d)
+
 <br><br>
 
 ## STEP6
@@ -18,9 +19,10 @@
 - Mock API 작성
 
 ### ERP 다이어그램
-<img width="946" alt="ERD다이어그램" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/9b6bd0c4-7b8d-4537-8285-f7a9805a8862">
+<img width="563" alt="ERD다이어그램2" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/fc903434-2f1f-431d-8e6a-944c9dca1639">
 
-### API 명세
+
+### API 명세 --> 변경 예정
 <b>토큰</b><br>
 <img width="712" alt="tokenApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/dd79c824-0823-4f8e-af73-c9c452325136">
 
