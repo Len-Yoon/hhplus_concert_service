@@ -22,7 +22,7 @@
 <img width="563" alt="ERD다이어그램2" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/fc903434-2f1f-431d-8e6a-944c9dca1639">
 
 
-### API 명세
+### API 명세 --> 변경 예정
 <b>토큰</b><br>
 <img width="712" alt="tokenApi" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/dd79c824-0823-4f8e-af73-c9c452325136">
 
