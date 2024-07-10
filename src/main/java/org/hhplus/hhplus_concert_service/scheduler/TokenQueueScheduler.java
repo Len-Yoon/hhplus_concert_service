@@ -13,7 +13,7 @@ public class TokenQueueScheduler {
 
     @Scheduled(fixedRate = 10000)
     public void scheduleTokenIssuance() {
-        tokenQueueService.issueTokens();       
+        tokenQueueService.issueTokens();
     }
 
 }
