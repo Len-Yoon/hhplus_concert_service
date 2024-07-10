@@ -8,5 +8,4 @@
 - 제출 : API Swagger 캡처 
 
 ### API Swagger
-
-  
+<img width="550" alt="swaggerAPI" src="https://github.com/Len-Yoon/hhplus_concert_service/assets/76799034/443b2023-3938-4cae-98e0-f3e2e958dda1">
