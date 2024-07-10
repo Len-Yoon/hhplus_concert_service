@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
-public class user {
+public class User {
     @Id
-    private String user_id;
+    private String userId;
 }
