@@ -19,7 +19,7 @@ public class TokenQueueServiceImpl implements TokenQueueService {
     @Override
     public void generateTokenForUser(String userId) {
         int activeCount = tokenQueueRepository.countByActiveTrue();
-        TokenQueue token = new TokenQueue(userId);
+        TokenQueue token = new TokenQueue();
         if(activeCount < 50){
             token.setActive(true);
             token.setToken(generateToken((token.getQueueId())));

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "tokenQueue")
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @DynamicUpdate
 public class TokenQueue {
     @Id
@@ -24,13 +24,6 @@ public class TokenQueue {
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime issuedAt;
-    private boolean Active;
-
-    public TokenQueue() {}
-
-    public TokenQueue(String userId) {
-        this.userId = userId;
-        this.Active = false;
-    }
+    private boolean active;
 
 }

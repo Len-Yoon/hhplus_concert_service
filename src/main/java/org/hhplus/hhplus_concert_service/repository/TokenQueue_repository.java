@@ -4,7 +4,6 @@ import org.hhplus.hhplus_concert_service.entity.TokenQueue;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TokenQueue_repository extends JpaRepository<TokenQueue, Integer> {
 

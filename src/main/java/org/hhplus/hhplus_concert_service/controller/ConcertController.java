@@ -32,7 +32,7 @@ public class ConcertController {
     //콘서트 예약 날짜 조회
     @GetMapping("concertDate")
     public List<Concert_item> checkConcertDate(HttpServletRequest request, HttpServletResponse response) {
-        int concertId = Utils.checkNullByInt(request.getParameter("userId"));
+        int concertId = Utils.checkNullByInt(request.getParameter("concertId"));
 
         return concertService.checkConcertDate(concertId);
     }

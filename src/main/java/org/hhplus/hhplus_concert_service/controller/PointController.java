@@ -27,7 +27,7 @@ public class PointController {
     }
 
     //포인트 충전
-    @PostMapping("plustPoint")
+    @PostMapping("plusPoint")
     public void plusPoint(HttpServletRequest request, HttpServletResponse response) {
         String userId = Utils.checkNull("userId");
         int chargePrice = Utils.checkNullByInt("chargePoint");
@@ -38,10 +38,10 @@ public class PointController {
     //포인트 차감
     @PostMapping("minusPoint")
     public void minusPoint(HttpServletRequest request, HttpServletResponse response) {
-        String userId = Utils.checkNull("userId");
-        int totalPrice = Utils.checkNullByInt("totalPoint");
+       String userId = Utils.checkNull("userId");
+       int totalPrice = Utils.checkNullByInt("totalPoint");
 
-        pointService.minusPoint(userId, totalPrice);
+       pointService.minusPoint(userId, totalPrice);
     }
 
 }
