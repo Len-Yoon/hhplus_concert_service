@@ -7,16 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Data
-@Table(name = "token")
+@Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Token {
+public class User {
     @Id
-    private int token_id;
-    private String user_id;
-    private LocalDateTime created_at;
+    private String userId;
 }

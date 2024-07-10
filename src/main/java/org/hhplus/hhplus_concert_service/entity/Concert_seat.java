@@ -1,22 +1,22 @@
 package org.hhplus.hhplus_concert_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Data
-@Table(name = "concert_seat")
+@Table(name = "concertSeat")
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 public class Concert_seat {
     @Id
-    private int seat_id;
-    private int item_id;
-    private int seat_num;
+    private int seatId;
+    private int itemId;
+    private int seatNum;
     private String status;
-    private int seat_price;
+    private int seatPrice;
 }

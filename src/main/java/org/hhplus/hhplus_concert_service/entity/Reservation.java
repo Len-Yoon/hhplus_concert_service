@@ -1,27 +1,32 @@
 package org.hhplus.hhplus_concert_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Data
 @Table(name = "reservation")
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 public class Reservation {
     @Id
-    private int reservation_id;
-    private String user_id;
-    private int concert_id;
-    private int seat_id;
-    private int item_id;
-    private int total_price;
+    private int reservationId;
+    private String userId;
+    private int concertId;
+    private int seatId;
+    private int itemId;
+    private int payment_id;
+    private int totalPrice;
     private String status;
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
+
+
 }

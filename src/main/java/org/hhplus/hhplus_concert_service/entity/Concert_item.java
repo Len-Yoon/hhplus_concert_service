@@ -1,22 +1,26 @@
 package org.hhplus.hhplus_concert_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Data
-@Table (name = "concert_item")
+@Table (name = "concertItem")
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 public class Concert_item {
     @Id
-    private int item_id;
-    private int concert_id;
-    private LocalDateTime concert_date;
+    private int itemId;
+    private int concertId;
+    private LocalDateTime concertDate;
+
 }
