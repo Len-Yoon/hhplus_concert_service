@@ -12,4 +12,6 @@ public interface TokenQueueService {
 
     List<TokenQueue> getAllTokens();
 
+    TokenQueue getToken(String userId);
+
 }

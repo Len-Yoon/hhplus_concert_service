@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "tokenQueue")
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @DynamicUpdate
 public class TokenQueue {
     @Id

@@ -2,7 +2,9 @@ package org.hhplus.hhplus_concert_service.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.entity.Point;
+import org.hhplus.hhplus_concert_service.entity.TokenQueue;
 import org.hhplus.hhplus_concert_service.repository.Point_repository;
+import org.hhplus.hhplus_concert_service.repository.TokenQueue_repository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class PointServiceImpl implements PointService {
 
     private final Point_repository pointRepository;
-
+    private final TokenQueue_repository tokenQueueRepository;
 
     @Override
     public Point checkPoint(String userId) {
@@ -19,14 +21,23 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public void plusPoint(String userId, int chargePoint) {
-        Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
+        TokenQueue tokenQueue = tokenQueueRepository.findByUserId(userId);
+        String status = tokenQueue.getStatus();
 
-        Point newPoint = new Point();
+        if(!status.equals("진행")) {
+            throw  new RuntimeException("오류가 발생했습니다.");
+        } else {
+            Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
 
-        newPoint.setUserId(userId);
-        newPoint.setPoint(point.getPoint()+chargePoint);
+            Point newPoint = new Point();
 
-        pointRepository.save(newPoint);
+            newPoint.setUserId(userId);
+            newPoint.setPoint(point.getPoint()+chargePoint);
+
+            pointRepository.save(newPoint);
+        }
+
+
     }
 
     @Override

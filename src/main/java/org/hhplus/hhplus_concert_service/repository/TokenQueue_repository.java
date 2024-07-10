@@ -13,4 +13,6 @@ public interface TokenQueue_repository extends JpaRepository<TokenQueue, Integer
     List<TokenQueue> findByActiveFalseOrderByQueueIdAsc();
 
     int countByActiveTrue();
+
+    TokenQueue findByUserId(String userId);
 }
