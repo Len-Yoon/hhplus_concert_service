@@ -16,4 +16,7 @@ public interface Reservation_repository extends JpaRepository<Reservation, Integ
 
     //특정 예약내역 조회
     Reservation findByReservationId(int reservationId);
+
+    //임시예약 상태 내역 조회
+    List<Reservation> findAllByStatus(String status);
 }

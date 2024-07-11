@@ -22,7 +22,6 @@ public class TokenQueue {
     private String userId;
     private String token;
     private String status;
-    private LocalDateTime createdAt;
     private LocalDateTime issuedAt;
     private boolean active;
 

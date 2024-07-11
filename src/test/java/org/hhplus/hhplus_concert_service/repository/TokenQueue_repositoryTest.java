@@ -29,7 +29,7 @@ class TokenQueue_repositoryTest {
 
         tokenQueue.setUserId("유저1");
         tokenQueue.setStatus("대기");
-        tokenQueue.setCreatedAt(LocalDateTime.now());
+        tokenQueue.setIssuedAt(LocalDateTime.now());
         tokenQueue.setActive(false);
 
         tokenQueueRepository.save(tokenQueue);

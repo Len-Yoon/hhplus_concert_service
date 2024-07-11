@@ -14,4 +14,7 @@ public interface ReservationService {
 
     //특정 유저 예약 내역 조회
     List<Reservation> checkReservations(String userId);
+
+    //예약 내역 조회 (임시 예약 10분내 예약 안할 시 예약가능으로 상태 변경)
+    List<Reservation> checkAllReservations(String status);
 }

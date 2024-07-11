@@ -14,4 +14,6 @@ public interface TokenQueueService {
 
     TokenQueue getToken(String userId);
 
+    void deleteToken(int queueId);
+
 }

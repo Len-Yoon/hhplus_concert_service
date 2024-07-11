@@ -1,5 +1,7 @@
 package org.hhplus.hhplus_concert_service.service;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.entity.Concert;
@@ -8,6 +10,11 @@ import org.hhplus.hhplus_concert_service.entity.Reservation;
 import org.hhplus.hhplus_concert_service.repository.Concert_repository;
 import org.hhplus.hhplus_concert_service.repository.Concert_seat_repository;
 import org.hhplus.hhplus_concert_service.repository.Reservation_repository;
+import org.hibernate.StaleObjectStateException;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +29,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
+    @Retryable(retryFor ={OptimisticLockException.class, StaleObjectStateException.class,
+            ObjectOptimisticLockingFailureException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public void reservation(String userId, int concertId, int itemId, int seatId, int totalPrice, String status) {
 
         Concert concert = concertRepository.findByConcertId(concertId);
@@ -45,6 +54,10 @@ public class ReservationServiceImpl implements ReservationService {
             reservation.setStatus("임시예약");
 
             reservationRepository.save(reservation);
+
+            concertSeat.setStatus("예약완료");
+
+            concertSeatRepository.save(concertSeat);
         }
     }
 
@@ -61,5 +74,10 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> checkReservations(String userId) {
         return reservationRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<Reservation> checkAllReservations(String status) {
+        return reservationRepository.findAllByStatus(status);
     }
 }

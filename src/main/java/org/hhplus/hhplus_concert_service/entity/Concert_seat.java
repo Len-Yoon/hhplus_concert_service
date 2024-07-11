@@ -19,4 +19,7 @@ public class Concert_seat {
     private int seatNum;
     private String status;
     private int seatPrice;
+
+    @Version
+    private int version;
 }

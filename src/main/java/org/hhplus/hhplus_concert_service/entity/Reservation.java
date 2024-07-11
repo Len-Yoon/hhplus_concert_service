@@ -28,5 +28,4 @@ public class Reservation {
     private String status;
     private LocalDateTime createdAt;
 
-
 }

@@ -57,6 +57,11 @@ public class TokenQueueServiceImpl implements TokenQueueService {
         return tokenQueueRepository.findByUserId(userId);
     }
 
+    @Override
+    public void deleteToken(int queueId) {
+        tokenQueueRepository.deleteByQueueId(queueId);
+    }
+
     private String generateToken(int queueId) {
         return "TOKEN_" + queueId;
     }
