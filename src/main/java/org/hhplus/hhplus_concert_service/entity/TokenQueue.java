@@ -6,17 +6,23 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "token")
+@Table(name = "tokenQueue")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Token {
+@DynamicUpdate
+public class TokenQueue {
     @Id
-    private int token_id;
-    private String user_id;
-    private LocalDateTime created_at;
+    private int queueId;
+    private String userId;
+    private String token;
+    private String status;
+    private LocalDateTime issuedAt;
+    private boolean active;
+
 }
