@@ -1,4 +1,4 @@
-# hhplus_concert_service (3주차)
+# hhplus_concert_service (2주차)
 ### 콘서트 예약 서비스
 
 <br><br>
