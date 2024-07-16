@@ -1,5 +1,6 @@
 package org.hhplus.hhplus_concert_service.application;
 
+import org.hhplus.hhplus_concert_service.business.TokenQueueServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
 import org.junit.jupiter.api.BeforeEach;

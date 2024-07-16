@@ -2,8 +2,8 @@ package org.hhplus.hhplus_concert_service.scheduler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.hhplus.hhplus_concert_service.Utils;
-import org.hhplus.hhplus_concert_service.entity.TokenQueue;
-import org.hhplus.hhplus_concert_service.service.TokenQueueService;
+import org.hhplus.hhplus_concert_service.domain.TokenQueue;
+import org.hhplus.hhplus_concert_service.business.TokenQueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

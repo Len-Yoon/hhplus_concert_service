@@ -1,11 +1,10 @@
 package org.hhplus.hhplus_concert_service.scheduler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.hhplus.hhplus_concert_service.entity.Concert_seat;
-import org.hhplus.hhplus_concert_service.entity.Reservation;
-import org.hhplus.hhplus_concert_service.repository.Concert_seat_repository;
-import org.hhplus.hhplus_concert_service.service.ConcertService;
-import org.hhplus.hhplus_concert_service.service.ReservationService;
+import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.domain.Reservation;
+import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
+import org.hhplus.hhplus_concert_service.business.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
