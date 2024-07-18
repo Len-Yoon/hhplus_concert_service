@@ -24,6 +24,7 @@ public class  ConcertServiceImpl implements ConcertService {
 
     @Override
     public List<Concert> checkConcert() {
+
         return concertRepository.findByStatus("Y");
     }
 

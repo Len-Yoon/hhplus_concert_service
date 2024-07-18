@@ -3,14 +3,18 @@ package org.hhplus.hhplus_concert_service.business;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
+import org.hhplus.hhplus_concert_service.exception.AllExceptions;
 import org.hhplus.hhplus_concert_service.persistence.Point_repository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 
+    private static final Logger log = LoggerFactory.getLogger(PointServiceImpl.class);
     private final Point_repository pointRepository;
     private final TokenQueue_repository tokenQueueRepository;
 
@@ -26,7 +30,7 @@ public class PointServiceImpl implements PointService {
         Point newPoint = new Point();
 
         newPoint.setUserId(userId);
-        newPoint.setPoint(point.getPoint()+chargePoint);
+        newPoint.setPoint(point.getPoint() + chargePoint);
 
         pointRepository.save(newPoint);
 
@@ -40,14 +44,14 @@ public class PointServiceImpl implements PointService {
         int holdPoint = point.getPoint();
         String status = tokenQueue.getStatus();
         if(!status.equals("진행")) {
-            throw new RuntimeException("오류가 발생했습니다.");
+            throw new RuntimeException();
         } else {
             if(holdPoint < totalPrice) {
-                throw  new RuntimeException("포인트가 부족합니다.");
+                throw  new RuntimeException();
             } else {
                 Point newPoint = new Point();
                 newPoint.setUserId(userId);
-                newPoint.setPoint(point.getPoint()-totalPrice);
+                newPoint.setPoint(point.getPoint() - totalPrice);
 
                 pointRepository.save(newPoint);
             }

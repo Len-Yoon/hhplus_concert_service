@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.application;
+package org.hhplus.hhplus_concert_service.unitTest;
 
 import org.hhplus.hhplus_concert_service.business.PointServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Point;

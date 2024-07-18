@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.presentation;
+package org.hhplus.hhplus_concert_service.interfaces.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +8,8 @@ import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.hhplus.hhplus_concert_service.business.ConcertService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConcertController {
 
+    private static final Logger log = LoggerFactory.getLogger(ConcertController.class);
     private final ConcertService concertService;
 
     //예약가능 콘서트 조회
     @GetMapping("")
-    public List<Concert> checkConccert(HttpServletRequest request, HttpServletResponse response) {
+    public List<Concert> checkConcert(HttpServletRequest request, HttpServletResponse response) {
 
         return concertService.checkConcert();
     }

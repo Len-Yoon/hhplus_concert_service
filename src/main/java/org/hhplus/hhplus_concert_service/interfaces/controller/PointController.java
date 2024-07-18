@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.presentation;
+package org.hhplus.hhplus_concert_service.interfaces.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class PointController {
     //포인트 조회
     @GetMapping("")
     public Point checkPoint(HttpServletRequest request, HttpServletResponse response) {
-        String userId = Utils.checkNull("userId");
+        String userId = Utils.checkNull(request.getParameter("userId"));
 
         return pointService.checkPoint(userId);
     }
@@ -29,8 +29,8 @@ public class PointController {
     //포인트 충전
     @PostMapping("plusPoint")
     public void plusPoint(HttpServletRequest request, HttpServletResponse response) {
-        String userId = Utils.checkNull("userId");
-        int chargePrice = Utils.checkNullByInt("chargePoint");
+        String userId = Utils.checkNull(request.getParameter("userId"));
+        int chargePrice = Utils.checkNullByInt(request.getParameter("chargePoint"));
 
         pointService.plusPoint(userId, chargePrice);
     }
@@ -38,8 +38,8 @@ public class PointController {
     //포인트 차감
     @PostMapping("minusPoint")
     public void minusPoint(HttpServletRequest request, HttpServletResponse response) {
-       String userId = Utils.checkNull("userId");
-       int totalPrice = Utils.checkNullByInt("totalPoint");
+       String userId = Utils.checkNull(request.getParameter("userId"));
+       int totalPrice = Utils.checkNullByInt(request.getParameter("totalPoint"));
 
        pointService.minusPoint(userId, totalPrice);
     }

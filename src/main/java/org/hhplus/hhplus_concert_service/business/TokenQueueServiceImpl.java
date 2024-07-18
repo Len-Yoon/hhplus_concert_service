@@ -24,6 +24,8 @@ public class TokenQueueServiceImpl implements TokenQueueService {
             token.setActive(true);
             token.setToken(generateToken((token.getQueueId())));
             token.setIssuedAt(LocalDateTime.now());
+        } else {
+            token.setActive(false);
         }
 
         tokenQueueRepository.save(token);

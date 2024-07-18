@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.presentation;
+package org.hhplus.hhplus_concert_service.interfaces.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

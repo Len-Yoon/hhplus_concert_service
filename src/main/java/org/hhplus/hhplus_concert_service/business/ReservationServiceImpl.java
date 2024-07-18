@@ -38,9 +38,9 @@ public class ReservationServiceImpl implements ReservationService {
         String seatstatus = concertSeat.getStatus();
 
         if(!concertStatus.equals("Y")) {
-            throw new RuntimeException("예약 가능한 콘서트가 아닙니다.");
+            throw new RuntimeException();
         } else if (!seatstatus.equals("예약가능")) {
-            throw new RuntimeException("이미 예약이 된 좌석입니다.");
+            throw new RuntimeException();
         } else {
             Reservation reservation = new Reservation();
 
@@ -64,7 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
 
         reservation.setStatus("예약완료");
-        reservation.setPayment_id(paymentId);
+        reservation.setPaymentId(paymentId);
 
         reservationRepository.save(reservation);
     }
