@@ -35,11 +35,11 @@ public class ReservationServiceImpl implements ReservationService {
         Concert_seat concertSeat = concertSeatRepository.findBySeatId(seatId);
 
         String concertStatus = concert.getStatus();
-        String seatstatus = concertSeat.getStatus();
+        String seatStatus = concertSeat.getStatus();
 
         if(!concertStatus.equals("Y")) {
             throw new RuntimeException();
-        } else if (!seatstatus.equals("예약가능")) {
+        } else if (!seatStatus.equals("예약가능")) {
             throw new RuntimeException();
         } else {
             Reservation reservation = new Reservation();

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.exception.AllExceptions;
 import org.hhplus.hhplus_concert_service.persistence.Concert_item_repository;
 import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
 import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,16 +27,31 @@ public class  ConcertServiceImpl implements ConcertService {
     @Override
     public List<Concert> checkConcert() {
 
-        return concertRepository.findByStatus("Y");
+        List<Concert> concertList = concertRepository.findByStatus("Y");
+
+        if (concertList.isEmpty())
+            throw new NoSuchElementException();
+
+        return concertList;
     }
 
     @Override
     public List<Concert_item> checkConcertDate(int concertId) {
-        return concertItemRepository.findByConcertId(concertId);
+        List<Concert_item> concertItemList = concertItemRepository.findByConcertId(concertId);
+
+        if (concertItemList.isEmpty())
+            throw new NoSuchElementException();
+
+        return concertItemList;
     }
 
     @Override
     public List<Concert_seat> checkConcertSeat(int itemId) {
+        List<Concert_seat> concertSeatList = concertSeatRepository.findAllByItemId(itemId);
+        if (concertSeatList.isEmpty())
+            throw new NoSuchElementException();
+
+
         return concertSeatRepository.findAllByItemId(itemId);
     }
 
@@ -52,6 +69,10 @@ public class  ConcertServiceImpl implements ConcertService {
                 newConcertItemList.add(concertItemList.get(i));
             }
         }
+
+        if (newConcertItemList.isEmpty())
+            throw new NoSuchElementException();
+
         return newConcertItemList;
     }
 

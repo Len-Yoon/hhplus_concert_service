@@ -2,15 +2,17 @@ package org.hhplus.hhplus_concert_service.interfaces.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.hhplus_concert_service.Utils;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.hhplus.hhplus_concert_service.business.ConcertService;
+import org.hhplus.hhplus_concert_service.interfaces.controller.dto.ConcertDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,33 +29,35 @@ public class ConcertController {
 
     //예약가능 콘서트 조회
     @GetMapping("")
-    public List<Concert> checkConcert(HttpServletRequest request, HttpServletResponse response) {
+    public List<Concert> checkConcert() {
 
         return concertService.checkConcert();
     }
 
     //콘서트 예약 날짜 조회
     @GetMapping("concertDate")
-    public List<Concert_item> checkConcertDate(HttpServletRequest request, HttpServletResponse response) {
-        int concertId = Utils.checkNullByInt(request.getParameter("concertId"));
+    public List<Concert_item> checkConcertDate(@Valid @ModelAttribute ConcertDTO concertDTO) {
+        int concertId = concertDTO.getConcertId();
 
         return concertService.checkConcertDate(concertId);
     }
 
     //콘서트 예약 좌석 조회
     @GetMapping("concertSeat")
-    public List<Concert_seat> checkConcertSeat(HttpServletRequest request, HttpServletResponse response) {
-        int concertItemId = Utils.checkNullByInt("concertItemId");
+    public List<Concert_seat> checkConcertSeat(@Valid @ModelAttribute ConcertDTO concertDTO) {
+        int itemId = concertDTO.getItemId();
 
-        return concertService.checkConcertSeat(concertItemId);
+        return concertService.checkConcertSeat(itemId);
     }
 
     //날짜를 통한 콘서트 조회
     @GetMapping("concertByDate")
-    public List<Concert> checkConcertByConcertDate(HttpServletRequest request, HttpServletResponse response) {
-        LocalDate checkDate = LocalDate.parse(request.getParameter("checkDate"));
+    public List<Concert> checkConcertByConcertDate(@Valid @ModelAttribute ConcertDTO concertDTO) {
+        LocalDate checkDate = concertDTO.getCheckDate();
 
         return concertService.checkConcertByConcertDate(checkDate);
     }
+
+
 
 }

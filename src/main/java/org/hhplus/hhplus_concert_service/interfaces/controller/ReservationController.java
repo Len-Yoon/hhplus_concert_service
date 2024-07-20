@@ -1,15 +1,13 @@
 package org.hhplus.hhplus_concert_service.interfaces.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hhplus.hhplus_concert_service.Utils;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.hhplus.hhplus_concert_service.business.ReservationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.hhplus.hhplus_concert_service.interfaces.controller.dto.ReservationDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,33 +16,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationController {
 
+    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationService reservationService;
 
     //예약 요청
     @PostMapping("")
-    public void reservation(HttpServletRequest request, HttpServletResponse response) {
-        int concertId = Utils.checkNullByInt(request.getParameter("concertId"));
-        int itemId = Utils.checkNullByInt(request.getParameter("itemId"));
-        int seatId = Utils.checkNullByInt(request.getParameter("seatId"));
-        String userId = Utils.checkNull(request.getParameter("userId"));
-        int totalPrice = Utils.checkNullByInt(request.getParameter("totalPrice"));
+    public void reservation(@Valid @ModelAttribute ReservationDTO reservationDTO) {
+        String userId = reservationDTO.getUserId();
+        int concertId = reservationDTO.getConcertId();
+        int itemId = reservationDTO.getItemId();
+        int seatId = reservationDTO.getSeatId();
+        int totalPrice = reservationDTO.getTotalPrice();
+
+        log.info("userId == " + userId);
+        log.info("concertId == " + concertId);
+        log.info("itemId ==" + itemId);
 
         reservationService.reservation(userId, concertId, itemId, seatId, totalPrice, "임시예약");
     }
 
     //예약 완료
     @PostMapping("reservationCompleted")
-    public void reservationCompleted(HttpServletRequest request, HttpServletResponse response) {
-        int reservationId = Utils.checkNullByInt(request.getParameter("reservationId"));
-        int paymentId = Utils.checkNullByInt(request.getParameter("paymentId"));
+    public void reservationCompleted(@Valid @ModelAttribute ReservationDTO reservationDTO) {
+        int reservationId = reservationDTO.getReservationId();
+        int paymentId = reservationDTO.getPaymentId();
 
         reservationService.reservationCompleted(reservationId, paymentId);
     }
 
     //예약 내역 체크
     @GetMapping("checkReservation")
-    public List<Reservation> checkReservation(HttpServletRequest request, HttpServletResponse response) {
-        String userId = Utils.checkNull(request.getParameter("userId"));
+    public List<Reservation> checkReservation(@Valid @ModelAttribute ReservationDTO reservationDTO) {
+        String userId = reservationDTO.getUserId();
 
         return reservationService.checkReservations(userId);
     }

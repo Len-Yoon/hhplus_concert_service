@@ -25,8 +25,6 @@ public class MyFilter implements Filter {
         log.info("Request URI: {}", req.getRequestURL());
 
         chain.doFilter(request, response);
-
-        log.info("Return URI: {}", req.getRequestURL());
     }
 
     //기존 필터 삭제
