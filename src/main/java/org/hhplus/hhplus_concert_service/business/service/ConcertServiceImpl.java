@@ -1,10 +1,9 @@
-package org.hhplus.hhplus_concert_service.business;
+package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
-import org.hhplus.hhplus_concert_service.exception.AllExceptions;
 import org.hhplus.hhplus_concert_service.persistence.Concert_item_repository;
 import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
 import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
@@ -48,9 +47,9 @@ public class  ConcertServiceImpl implements ConcertService {
     @Override
     public List<Concert_seat> checkConcertSeat(int itemId) {
         List<Concert_seat> concertSeatList = concertSeatRepository.findAllByItemId(itemId);
+
         if (concertSeatList.isEmpty())
             throw new NoSuchElementException();
-
 
         return concertSeatRepository.findAllByItemId(itemId);
     }
@@ -62,6 +61,8 @@ public class  ConcertServiceImpl implements ConcertService {
         List<Concert_item> newConcertItemList = new ArrayList<>();
 
         String checkDateStr = checkDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        if (checkDateStr.isEmpty())
+            throw new IllegalArgumentException();
 
         for(int i = 0; i < concertItemList.size(); i++){
             String date = String.valueOf(concertItemList.get(i).getConcertDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

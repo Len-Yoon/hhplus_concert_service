@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
-import org.hhplus.hhplus_concert_service.business.ReservationService;
+import org.hhplus.hhplus_concert_service.business.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,9 @@
-package org.hhplus.hhplus_concert_service.business;
+package org.hhplus.hhplus_concert_service.business.service;
 
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hhplus.hhplus_concert_service.business.constans.ReservationConstants;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
@@ -16,6 +17,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +39,10 @@ public class ReservationServiceImpl implements ReservationService {
         String concertStatus = concert.getStatus();
         String seatStatus = concertSeat.getStatus();
 
-        if(!concertStatus.equals("Y")) {
-            throw new RuntimeException();
-        } else if (!seatStatus.equals("예약가능")) {
-            throw new RuntimeException();
+        if(!ReservationConstants.CONCERT_AVAILABLE.equals(concertStatus)) {
+            throw new NoSuchElementException();
+        } else if (!ReservationConstants.SEAT_AVAILABLE.equals(seatStatus)) {
+            throw new NoSuchElementException();
         } else {
             Reservation reservation = new Reservation();
 

@@ -1,6 +1,6 @@
 package org.hhplus.hhplus_concert_service.unitTest;
 
-import org.hhplus.hhplus_concert_service.business.PointServiceImpl;
+import org.hhplus.hhplus_concert_service.business.service.PointServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
 import org.hhplus.hhplus_concert_service.persistence.Point_repository;

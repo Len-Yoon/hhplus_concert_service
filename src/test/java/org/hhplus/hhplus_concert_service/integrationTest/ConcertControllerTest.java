@@ -1,20 +1,17 @@
 package org.hhplus.hhplus_concert_service.integrationTest;
 
-import org.hhplus.hhplus_concert_service.business.ConcertService;
+import org.hhplus.hhplus_concert_service.business.service.ConcertService;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.hhplus.hhplus_concert_service.interfaces.controller.ConcertController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 import java.util.Collections;

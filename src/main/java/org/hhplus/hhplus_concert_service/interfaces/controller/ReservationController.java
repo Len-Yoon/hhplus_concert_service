@@ -3,7 +3,7 @@ package org.hhplus.hhplus_concert_service.interfaces.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
-import org.hhplus.hhplus_concert_service.business.ReservationService;
+import org.hhplus.hhplus_concert_service.business.service.ReservationService;
 import org.hhplus.hhplus_concert_service.interfaces.controller.dto.ReservationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +27,6 @@ public class ReservationController {
         int itemId = reservationDTO.getItemId();
         int seatId = reservationDTO.getSeatId();
         int totalPrice = reservationDTO.getTotalPrice();
-
-        log.info("userId == " + userId);
-        log.info("concertId == " + concertId);
-        log.info("itemId ==" + itemId);
 
         reservationService.reservation(userId, concertId, itemId, seatId, totalPrice, "임시예약");
     }

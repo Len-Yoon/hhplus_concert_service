@@ -1,6 +1,6 @@
 package org.hhplus.hhplus_concert_service.integrationTest;
 
-import org.hhplus.hhplus_concert_service.business.ReservationService;
+import org.hhplus.hhplus_concert_service.business.service.ReservationService;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.hhplus.hhplus_concert_service.interfaces.controller.ReservationController;
 import org.junit.jupiter.api.BeforeEach;

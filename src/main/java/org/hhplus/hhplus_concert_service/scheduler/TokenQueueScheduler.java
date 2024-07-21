@@ -2,11 +2,10 @@ package org.hhplus.hhplus_concert_service.scheduler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
-import org.hhplus.hhplus_concert_service.business.TokenQueueService;
+import org.hhplus.hhplus_concert_service.business.service.TokenQueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDateTime;
 import java.util.List;

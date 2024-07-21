@@ -1,6 +1,6 @@
 package org.hhplus.hhplus_concert_service.unitTest;
 
-import org.hhplus.hhplus_concert_service.business.PaymentServiceImpl;
+import org.hhplus.hhplus_concert_service.business.service.PaymentServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Payment;
 import org.hhplus.hhplus_concert_service.persistence.Payment_repository;
 import org.junit.jupiter.api.BeforeEach;

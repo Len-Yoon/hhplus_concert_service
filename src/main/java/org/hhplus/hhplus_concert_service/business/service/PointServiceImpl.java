@@ -1,9 +1,9 @@
-package org.hhplus.hhplus_concert_service.business;
+package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hhplus.hhplus_concert_service.business.constans.TokenConstants;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
-import org.hhplus.hhplus_concert_service.exception.AllExceptions;
 import org.hhplus.hhplus_concert_service.persistence.Point_repository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
 import org.slf4j.Logger;
@@ -43,7 +43,8 @@ public class PointServiceImpl implements PointService {
 
         int holdPoint = point.getPoint();
         String status = tokenQueue.getStatus();
-        if(!status.equals("진행")) {
+
+        if(!TokenConstants.STATUS_IN_PROGRESS.equals(status)) {
             throw new RuntimeException();
         } else {
             if(holdPoint < totalPrice) {
