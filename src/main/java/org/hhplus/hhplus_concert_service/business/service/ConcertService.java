@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.business;
+package org.hhplus.hhplus_concert_service.business.service;
 
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.Concert_item;

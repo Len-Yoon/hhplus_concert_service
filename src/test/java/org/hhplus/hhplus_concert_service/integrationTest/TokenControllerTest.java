@@ -1,6 +1,6 @@
 package org.hhplus.hhplus_concert_service.integrationTest;
 
-import org.hhplus.hhplus_concert_service.business.TokenQueueService;
+import org.hhplus.hhplus_concert_service.business.service.TokenQueueService;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
 import org.hhplus.hhplus_concert_service.interfaces.controller.TokenController;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(TokenController.class)
 class TokenControllerTest {
