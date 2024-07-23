@@ -20,4 +20,7 @@ public class Point {
     int pointId;
     private String userId;
     private int point;
+
+    @Version
+    private int version;
 }

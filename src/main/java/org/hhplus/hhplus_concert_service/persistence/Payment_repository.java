@@ -2,6 +2,8 @@ package org.hhplus.hhplus_concert_service.persistence;
 
 import org.hhplus.hhplus_concert_service.domain.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 
 public interface Payment_repository extends JpaRepository<Payment, Integer> {
 

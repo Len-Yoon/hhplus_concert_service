@@ -8,6 +8,7 @@ import org.hhplus.hhplus_concert_service.persistence.Point_repository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,25 +37,37 @@ public class PointServiceImpl implements PointService {
 
     }
 
+    //낙관적 락 적용
     @Override
     public void minusPoint(String userId, int totalPrice) {
+        int retryCount = 5;
+
         Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
         TokenQueue tokenQueue = tokenQueueRepository.findByUserId(userId);
 
         int holdPoint = point.getPoint();
         String status = tokenQueue.getStatus();
 
-        if(!TokenConstants.STATUS_IN_PROGRESS.equals(status)) {
-            throw new RuntimeException();
-        } else {
-            if(holdPoint < totalPrice) {
-                throw  new RuntimeException();
-            } else {
-                Point newPoint = new Point();
-                newPoint.setUserId(userId);
-                newPoint.setPoint(point.getPoint() - totalPrice);
+        while (retryCount > 0) {
+            try {
+                if(!TokenConstants.STATUS_IN_PROGRESS.equals(status)) {
+                    throw new RuntimeException();
+                } else {
+                    if(holdPoint < totalPrice) {
+                        throw  new RuntimeException();
+                    } else {
+                        Point newPoint = new Point();
+                        newPoint.setUserId(userId);
+                        newPoint.setPoint(point.getPoint() - totalPrice);
 
-                pointRepository.save(newPoint);
+                        pointRepository.save(newPoint);
+                    }
+                }
+            } catch (ObjectOptimisticLockingFailureException e) {
+                retryCount --;
+                if(retryCount == 0) {
+                    throw new RuntimeException();
+                }
             }
         }
     }

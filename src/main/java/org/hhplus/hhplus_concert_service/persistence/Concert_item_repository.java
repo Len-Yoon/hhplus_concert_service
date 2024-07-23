@@ -2,9 +2,11 @@ package org.hhplus.hhplus_concert_service.persistence;
 
 import org.hhplus.hhplus_concert_service.domain.Concert_item;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+
 
 public interface Concert_item_repository extends JpaRepository<Concert_item, Integer> {
 

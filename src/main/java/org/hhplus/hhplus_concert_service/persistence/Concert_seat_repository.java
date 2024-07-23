@@ -4,8 +4,10 @@ import jakarta.persistence.LockModeType;
 import org.hhplus.hhplus_concert_service.domain.Concert_seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 public interface Concert_seat_repository extends JpaRepository<Concert_seat, Integer> {
 

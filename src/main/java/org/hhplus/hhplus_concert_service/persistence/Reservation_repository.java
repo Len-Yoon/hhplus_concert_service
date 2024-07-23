@@ -2,8 +2,10 @@ package org.hhplus.hhplus_concert_service.persistence;
 
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 public interface Reservation_repository extends JpaRepository<Reservation, Integer> {
 

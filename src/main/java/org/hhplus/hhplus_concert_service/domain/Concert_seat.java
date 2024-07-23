@@ -12,7 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "concertSeat")
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
+//@DynamicUpdate
 public class Concert_seat {
     @Id
     @NotNull(message = "seatId cannot be empty.")

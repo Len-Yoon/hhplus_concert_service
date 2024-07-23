@@ -2,6 +2,7 @@ package org.hhplus.hhplus_concert_service.persistence;
 
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

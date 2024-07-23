@@ -28,10 +28,9 @@ public class ReservationServiceImpl implements ReservationService {
     private final Reservation_repository reservationRepository;
 
     @Override
-    @Transactional
-    @Retryable(retryFor ={OptimisticLockException.class, StaleObjectStateException.class,
-            ObjectOptimisticLockingFailureException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
+    //낙관적 락 적용
     public void reservation(String userId, int concertId, int itemId, int seatId, int totalPrice, String status) {
+        int retryCount = 5;
 
         Concert concert = concertRepository.findByConcertId(concertId);
         Concert_seat concertSeat = concertSeatRepository.findBySeatId(seatId);
@@ -39,26 +38,38 @@ public class ReservationServiceImpl implements ReservationService {
         String concertStatus = concert.getStatus();
         String seatStatus = concertSeat.getStatus();
 
-        if(!ReservationConstants.CONCERT_AVAILABLE.equals(concertStatus)) {
-            throw new NoSuchElementException();
-        } else if (!ReservationConstants.SEAT_AVAILABLE.equals(seatStatus)) {
-            throw new NoSuchElementException();
-        } else {
-            Reservation reservation = new Reservation();
+        while (retryCount > 0) {
+            try {
 
-            reservation.setUserId(userId);
-            reservation.setConcertId(concertId);
-            reservation.setSeatId(seatId);
-            reservation.setItemId(itemId);
-            reservation.setTotalPrice(totalPrice);
-            reservation.setStatus("임시예약");
+                if(!ReservationConstants.CONCERT_AVAILABLE.equals(concertStatus)) {
+                    throw new NoSuchElementException();
+                } else if (!ReservationConstants.SEAT_AVAILABLE.equals(seatStatus)) {
+                    throw new NoSuchElementException();
+                } else {
+                    Reservation reservation = new Reservation();
 
-            reservationRepository.save(reservation);
+                    reservation.setUserId(userId);
+                    reservation.setConcertId(concertId);
+                    reservation.setSeatId(seatId);
+                    reservation.setItemId(itemId);
+                    reservation.setTotalPrice(totalPrice);
+                    reservation.setStatus("임시예약");
 
-            concertSeat.setStatus("예약완료");
+                    reservationRepository.save(reservation);
 
-            concertSeatRepository.save(concertSeat);
+                    concertSeat.setStatus("예약완료");
+
+                    concertSeatRepository.save(concertSeat);
+                    break;
+                }
+            } catch (ObjectOptimisticLockingFailureException e) {
+                retryCount --;
+                if(retryCount == 0) {
+                    throw new RuntimeException();
+                }
+            }
         }
+
     }
 
     @Override
