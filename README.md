@@ -1,4 +1,4 @@
-# (hhplus_concert_service 3주차)
+# (hhplus_concert_service 동시성제어 1주차)
 ### 콘서트 예약 서비스
 <details>
 <summary>제공 서비스</summary>
@@ -47,7 +47,8 @@
 ### 마일스톤
 <details>
   <summary>Step9 마일스톤</summary>
-  <li><img width="819" alt="마일스톤" src="https://github.com/user-attachments/assets/3b7a2866-4af3-408f-9255-781952a50725"></li>
+  <li><img width="865" alt="마일스톤" src="https://github.com/user-attachments/assets/f63bf13f-2c33-4491-b407-26de784f4279">
+ </li>
 </details>
 
 ### ERD 다이어그램
@@ -71,7 +72,11 @@
 
 <br>
 
-## STEP9
-- 필요한 Filter, Interceptor 등의 기능 구현
-- 예외 처리, 로깅 등 유효한 부가로직의 구현
+## STEP10
+- 나의 시나리오에서 발생할 수 있는 동시성 이슈에 대해 파악하고 가능한 동시성 제어 방식들을 도입해보고 각각의 장단점을 파악한 내용을 정리 제출 
+   - 구현의 복잡도, 성능, 효율성 등
+   - README 작성 혹은 외부 링크, 프로젝트 내의 다른 문서에 작성하였다면 README에 링크 게재
+
+## STEP11
+- DB Lock 을 활용한 동시성 제어 방식 에서 해당 비즈니스 로직에서 적합하다고 판단하여 차용한 동시성 제어 방식을 구현하여 비즈니스 로직에 적용하고, 통합테스트 등으로 이를 검증하는 코드 작성 및 제출
 
