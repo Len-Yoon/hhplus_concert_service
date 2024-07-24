@@ -73,9 +73,14 @@
 <br>
 
 ## STEP10
-- 나의 시나리오에서 발생할 수 있는 동시성 이슈에 대해 파악하고 가능한 동시성 제어 방식들을 도입해보고 각각의 장단점을 파악한 내용을 정리 제출 
-   - 구현의 복잡도, 성능, 효율성 등
-   - README 작성 혹은 외부 링크, 프로젝트 내의 다른 문서에 작성하였다면 README에 링크 게재
+<details>
+<summary>동시성 제어 시나리오</summary>
+  - Lock 관련 동시성제어 공부 <br>
+  https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C <br><br>
+  
+  1. Reservation Service
+  
+</details>
 
 ## STEP11
 - DB Lock 을 활용한 동시성 제어 방식 에서 해당 비즈니스 로직에서 적합하다고 판단하여 차용한 동시성 제어 방식을 구현하여 비즈니스 로직에 적용하고, 통합테스트 등으로 이를 검증하는 코드 작성 및 제출
