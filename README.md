@@ -77,253 +77,36 @@
 <summary>동시성 제어 시나리오</summary>
 
   ## 1. Reservation Service
-```
-package org.hhplus.hhplus_concert_service.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
+### 실패 솔루션 
+<img width="663" alt="비관적 락" src="https://github.com/user-attachments/assets/72fc2563-01ff-4ab5-bd59-b1f67d22f866">
+<br><br>
+장점: 완벽한 충돌 보장 <br>
+단점: ConccertSeat 조회부터 락을 걸어 작업이 오래걸리며 DeadLock 발생<br><br><br>
 
-@Entity
-@Data
-@Table(name = "concertSeat")
-@AllArgsConstructor
-@NoArgsConstructor
-@DynamicUpdate
-public class ConcertSeat {
-    @Id
-    @NotNull(message = "seatId cannot be empty.")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int seatId;
-    private int itemId;
-    private int seatNum;
-    private String status;
-    private int seatPrice;
+<img width="667" alt="낙관적 락" src="https://github.com/user-attachments/assets/6db186dc-fedd-4854-b0e4-40d5ff85ab0a">
+<br><br>
+장점: 충돌 발생 시에만 Lock이 사용되기에 성능 보장<br>
+단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 시간 지연 및 예약 실패
 
-    //낙관적 락 사용
-    @Version
-    private int version;
-```
+### 적용 솔루션
+<img width="782" alt="낙관+비관" src="https://github.com/user-attachments/assets/a325a4df-0c04-4445-ab50-5d608119150b"> <br>
+#### 이유<br>
 
+제가 낙관적 락과 비관적 락을 동시에 사용한 가장 큰 이유는 성능과 안정성의 균형을 맞추고 싶었기 때문입니다.
+낙관적 락을 이용하여 읽기 성능을 유지하고, 비관적 락을 통해 ConcertSeat의 상태를 변경 할 때 충돌을 방지하기 위해서 입니다.
 
-
-```
-package org.hhplus.hhplus_concert_service.persistence;
-
-import jakarta.persistence.LockModeType;
-import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
-
-
-public interface ConcertSeatRepository extends JpaRepository<ConcertSeat, Integer> {
-
-    //특정 콘서트 좌석 조회
-    List<ConcertSeat> findAllByItemId(int itemId);
-
-    //특정 좌석 조회
-    @Lock(LockModeType.OPTIMISTIC)
-    ConcertSeat findBySeatId(int seatId);
-
-
-    //비관적 락 사용을 위한 특정 좌석 조회
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT s FROM ConcertSeat s WHERE s.seatId = :seatId")
-    ConcertSeat lockSeatById(@Param("seatId") int seatId);
-}
-```
-
-
-
-
-```
-@Override
-    @Transactional
-    public void reservation(String userId, int concertId, int itemId, int seatId, int totalPrice, String status) {
-
-        int retryCount = 5;
-
-        while (retryCount > 0) {
-            Concert concert = concertRepository.findByConcertId(concertId);
-            //낙관적 락을 사용
-            ConcertSeat concertSeat = concertSeatRepository.findBySeatId(seatId);
-
-            concert.isAvailable();
-
-            try {
-                if (concert == null) {
-                    throw new NoSuchElementException();
-                }
-                if (!ReservationConstants.CONCERT_AVAILABLE.equals(concert.getStatus())) {
-                    throw new IllegalStateException();
-                }
-
-                if (concertSeat == null) {
-                    throw new NoSuchElementException();
-                }
-                if (!ReservationConstants.SEAT_AVAILABLE.equals(concertSeat.getStatus())) {
-                    throw new IllegalStateException();
-                }
-
-                //비관적락 사용 위한 select문
-                concertSeatRepository.lockSeatById(seatId);
-
-                Reservation reservation = new Reservation();
-
-                reservation.setUserId(userId);
-                reservation.setConcertId(concertId);
-                reservation.setSeatId(seatId);
-                reservation.setItemId(itemId);
-                reservation.setTotalPrice(totalPrice);
-                reservation.setStatus("T");
-
-                reservationRepository.save(reservation);
-
-                concertSeat.setStatus("N");
-
-                concertSeatRepository.save(concertSeat);
-                break;
-
-
-            } catch (ObjectOptimisticLockingFailureException e) {
-                //낙관적 락 캐쉬 초기화
-                entityManager.clear();
-                retryCount --;
-                if(retryCount == 0) {
-                    throw new RuntimeException("This seat is reserved");
-                }
-            } catch (PessimisticLockException | LockTimeoutException e) {
-                throw new RuntimeException("This seat is reserved");
-            }
-        }
-    }
-```
-
-#### Seat 조회에 낙관적 락을 건 이유
-제가 Seat 조회 코드에  읽기 작업에서 성능을 보장하면서 데이터의 충돌 가능성을 낮추면서 데이터를 읽어오는 과정을 성능을 보장하는 
-적합한 락이 낙관적 락이라 생각하였습니다. 만일 충돌이 일어날 경우를 대비하여 5번의 Retry를 설정해 두었으며, 매 재시도 전에 1차 캐쉬를 clear하도록 설정하였습니다. 
-5번 다 시도한 경우 RuntimeException을 이용하여 예외 처리되도록 설정하였습니다.
-
-#### save 부분에 비관적 락을 건 이유 
-예약정보를 저장하고 seat의 상태를 변경하는 과정에서 충돌이 많을 것이라 생각하였습니다. 
-특정 좌석에 대한 예약이 이루어지는 동안 다른 트랜잭션이 해당 좌석에 접근하지 못하도록 보장하고
-좌석 예약과 관련된 중요한 상태 변경이 동시에 발생하지 않도록 방지하기 위해 비관적 락을 사용하였습니다.
-ObjectOptimisticLockingFailureException 이용하여 예외를 처리를 하였습니다.
+낙관적 락을 사용하다 충돌 시, 1차 캐쉬를 초기화 하고, 재시도 로직을 통해 비관적 락의 충돌을 최소화하려고 노력하였습니다.
 
 ## 2. Point Service
-```
-package org.hhplus.hhplus_concert_service.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
+### 적용 솔루션
+<img width="665" alt="포인트 락" src="https://github.com/user-attachments/assets/b18595a3-d07e-4e49-b932-bc4af8b40389"> <br>
+#### 이유<br>
 
-@Entity
-@Data
-@Table(name = "Point")
-@AllArgsConstructor
-@NoArgsConstructor
-@DynamicUpdate
-public class Point {
-    @Id
-    @NotNull(message = "pointId cannot be empty.")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int pointId;
-    private String userId;
-    private int point;
-
-    @Version
-    private int version;
-}
-
-```
-
-
-
-```
-package org.hhplus.hhplus_concert_service.persistence;
-
-import jakarta.persistence.LockModeType;
-import org.hhplus.hhplus_concert_service.domain.Point;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-
-
-public interface PointRepository extends JpaRepository<Point, Integer> {
-
-    //유저 포인트 조회
-    @Lock(LockModeType.OPTIMISTIC)
-    Point findFirstByUserIdOrderByPointIdDesc(String userId);
-}
-```
-
-
-
-```
-  @Override
-    public void plusPoint(String userId, int chargePoint) {
-
-        Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
-
-        try {
-            Point newPoint = new Point();
-
-            newPoint.setUserId(userId);
-            newPoint.setPoint(point.getPoint() + chargePoint);
-
-            pointRepository.save(newPoint);
-        } catch (ObjectOptimisticLockingFailureException e) {
-            throw new RuntimeException();
-        }
-    }
-
-    //낙관적 락 적용
-    @Override
-    public void minusPoint(String userId, int totalPrice) {
-
-        Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
-        TokenQueue tokenQueue = tokenQueueRepository.findByUserId(userId);
-
-        int holdPoint = point.getPoint();
-        String status = tokenQueue.getStatus();
-
-        try {
-            if(!TokenConstants.STATUS_IN_PROGRESS.equals(status)) {
-                throw new RuntimeException();
-            } else {
-                if(holdPoint < totalPrice) {
-                    throw  new RuntimeException();
-                } else {
-                    Point newPoint = new Point();
-                    newPoint.setUserId(userId);
-                    newPoint.setPoint(point.getPoint() - totalPrice);
-
-                    pointRepository.save(newPoint);
-                }
-            }
-        } catch (ObjectOptimisticLockingFailureException e) {
-            throw new RuntimeException();
-        }
-    }
-```
-
-#### 포인트 충전/차감 부분에 낙관적 락을 건 이유
-포인트 충전/차감 부분에서 잠금 메커니즘은 사용자의 의도치 않은 반복 클릭으로 인한 중복 거래를 방지하고, 시스템의 데이터 무결성을 유지하고 신뢰 있는 거래 시스템을 구축 하기 위해 필요하다고 생각했습니다. 
-한 트랙잭션에 다수의 유저가 요청을 하는 경우가 아니고 주로 읽기 작업의 비중이 더 높다 생각하였기에 비관적 락보단 낙관적 락이 성능상 유리하다 생각하였습니다.
-ObjectOptimisticLockingFailureException 이용하여 예외를 처리하였고, 롤백하고 재시도하는 방식으로 데이터의 일관성을 유지하였습니다.
-
+포인트 충전/차감에 있어 가장 많이 발생할 수 있는 충돌은 동일한 사용자가 동시에 수행할 수 있기 때문에 충돌이 발생하는 경우라고 생각했습니다.
+그렇기에 충돌의 빈도가 적다고 생각하였습니다. 그렇기에 성능과 데이터의 일관성을 균형 있게 유지하기 위해 낙관적 락을 적용하였고, 충돌이 발생 시에만
+ObjectOptimisticLockingFailureException이 발생하도록 하였고, RollBack이 되도록 코드를 구현하였습니다.
 </details>
 
 ## STEP12
