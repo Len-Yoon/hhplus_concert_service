@@ -90,7 +90,7 @@
 단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 시간 지연 및 예약 실패
 
 ### 적용 솔루션
-<img width="544" alt="낙관+비관" src="https://github.com/user-attachments/assets/8954a16a-86e3-41a1-8688-2c277fd52ae0">
+<img width="544" alt="낙관+비관" src="https://github.com/user-attachments/assets/91933e1c-8814-4317-a79b-9144b8267643">
  <br>
  
 #### 이유<br>
