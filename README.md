@@ -90,7 +90,9 @@
 단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 시간 지연 및 예약 실패
 
 ### 적용 솔루션
-<img width="782" alt="낙관+비관" src="https://github.com/user-attachments/assets/a325a4df-0c04-4445-ab50-5d608119150b"> <br>
+<img width="544" alt="낙관+비관" src="https://github.com/user-attachments/assets/8954a16a-86e3-41a1-8688-2c277fd52ae0">
+ <br>
+ 
 #### 이유<br>
 
 제가 낙관적 락과 비관적 락을 동시에 사용한 가장 큰 이유는 성능과 안정성의 균형을 맞추고 싶었기 때문입니다.
