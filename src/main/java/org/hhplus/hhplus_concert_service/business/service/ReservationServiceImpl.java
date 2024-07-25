@@ -1,20 +1,19 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
-import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockTimeoutException;
+import jakarta.persistence.PessimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.business.constans.ReservationConstants;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
-import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
-import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
-import org.hhplus.hhplus_concert_service.persistence.Reservation_repository;
-import org.hibernate.StaleObjectStateException;
+import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
+import org.hhplus.hhplus_concert_service.persistence.ReservationRepository;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,60 +22,76 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
-    private final Concert_repository concertRepository;
-    private final Concert_seat_repository concertSeatRepository;
-    private final Reservation_repository reservationRepository;
+    private final ConcertRepository concertRepository;
+    private final ConcertSeatRepository concertSeatRepository;
+    private final ReservationRepository reservationRepository;
+
+    private final EntityManager entityManager;
 
     @Override
-    //낙관적 락 적용
+    @Transactional
     public void reservation(String userId, int concertId, int itemId, int seatId, int totalPrice, String status) {
+
         int retryCount = 5;
 
-        Concert concert = concertRepository.findByConcertId(concertId);
-        Concert_seat concertSeat = concertSeatRepository.findBySeatId(seatId);
-
-        String concertStatus = concert.getStatus();
-        String seatStatus = concertSeat.getStatus();
-
         while (retryCount > 0) {
+            Concert concert = concertRepository.findByConcertId(concertId);
+            //낙관적 락을 사용
+            ConcertSeat concertSeat = concertSeatRepository.findBySeatId(seatId);
+
             try {
-
-                if(!ReservationConstants.CONCERT_AVAILABLE.equals(concertStatus)) {
+                if (concert == null) {
                     throw new NoSuchElementException();
-                } else if (!ReservationConstants.SEAT_AVAILABLE.equals(seatStatus)) {
-                    throw new NoSuchElementException();
-                } else {
-                    Reservation reservation = new Reservation();
-
-                    reservation.setUserId(userId);
-                    reservation.setConcertId(concertId);
-                    reservation.setSeatId(seatId);
-                    reservation.setItemId(itemId);
-                    reservation.setTotalPrice(totalPrice);
-                    reservation.setStatus("임시예약");
-
-                    reservationRepository.save(reservation);
-
-                    concertSeat.setStatus("예약완료");
-
-                    concertSeatRepository.save(concertSeat);
-                    break;
                 }
+                if (!ReservationConstants.CONCERT_AVAILABLE.equals(concert.getStatus())) {
+                    throw new IllegalStateException();
+                }
+
+                if (concertSeat == null) {
+                    throw new NoSuchElementException();
+                }
+                if (!ReservationConstants.SEAT_AVAILABLE.equals(concertSeat.getStatus())) {
+                    throw new IllegalStateException();
+                }
+
+                //비관적락 사용 위한 select문
+                concertSeatRepository.lockSeatById(seatId);
+
+                Reservation reservation = new Reservation();
+
+                reservation.setUserId(userId);
+                reservation.setConcertId(concertId);
+                reservation.setSeatId(seatId);
+                reservation.setItemId(itemId);
+                reservation.setTotalPrice(totalPrice);
+                reservation.setStatus("T");
+
+                reservationRepository.save(reservation);
+
+                concertSeat.setStatus("N");
+
+                concertSeatRepository.save(concertSeat);
+                break;
+
+
             } catch (ObjectOptimisticLockingFailureException e) {
+                //낙관적 락 캐쉬 초기화
+                entityManager.clear();
                 retryCount --;
                 if(retryCount == 0) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("This seat is reserved");
                 }
+            } catch (PessimisticLockException | LockTimeoutException e) {
+                throw new RuntimeException("This seat is reserved");
             }
         }
-
     }
 
     @Override
     public void reservationCompleted(int reservationId, int paymentId) {
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
 
-        reservation.setStatus("예약완료");
+        reservation.setStatus("Y");
         reservation.setPaymentId(paymentId);
 
         reservationRepository.save(reservation);

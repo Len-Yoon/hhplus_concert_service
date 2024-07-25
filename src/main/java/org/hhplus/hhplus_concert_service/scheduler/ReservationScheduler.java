@@ -1,9 +1,9 @@
 package org.hhplus.hhplus_concert_service.scheduler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
-import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.hhplus.hhplus_concert_service.business.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,13 +19,13 @@ public class ReservationScheduler {
     ReservationService reservationService;
 
     @Autowired
-    Concert_seat_repository concertSeatRepository;
+    ConcertSeatRepository concertSeatRepository;
 
     @Scheduled(fixedRate = 60000)
     public void scheduleReservationIssuance(HttpServletRequest request) {
 
 
-        List<Reservation> reservationList = reservationService.checkAllReservations("임시예약");
+        List<Reservation> reservationList = reservationService.checkAllReservations("T");
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -36,9 +36,9 @@ public class ReservationScheduler {
             if(now.isAfter(createdAt.minusMinutes(5))) {
                 concertSeatRepository.findBySeatId(seatId);
 
-                Concert_seat concertSeat = concertSeatRepository.findBySeatId(seatId);
+                ConcertSeat concertSeat = concertSeatRepository.findBySeatId(seatId);
 
-                concertSeat.setStatus("예약가능");
+                concertSeat.setStatus("Y");
 
                 concertSeatRepository.save(concertSeat);
             }

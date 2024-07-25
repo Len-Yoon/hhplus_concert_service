@@ -2,8 +2,8 @@ package org.hhplus.hhplus_concert_service.integrationTest;
 
 import org.hhplus.hhplus_concert_service.business.service.ConcertService;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_item;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.domain.ConcertItem;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.interfaces.controller.ConcertController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class ConcertControllerTest {
     @Test
     void checkConcertDate() throws Exception {
 
-        List<Concert_item> concertItems = Collections.singletonList(new Concert_item());
+        List<ConcertItem> concertItems = Collections.singletonList(new ConcertItem());
         when(concertService.checkConcertDate(any(Integer.class))).thenReturn(concertItems);
 
         mockMvc.perform(get("/concert/concertDate").param("concertId", "1"))
@@ -62,7 +62,7 @@ class ConcertControllerTest {
     @Test
     void checkConcertSeat() throws Exception {
 
-        List<Concert_seat> concertSeats = Collections.singletonList(new Concert_seat());
+        List<ConcertSeat> concertSeats = Collections.singletonList(new ConcertSeat());
         when(concertService.checkConcertSeat(any(Integer.class))).thenReturn(concertSeats);
 
         mockMvc.perform(get("/concert/concertSeat").param("concertItemId", "1"))

@@ -3,8 +3,8 @@ package org.hhplus.hhplus_concert_service.unitTest;
 import org.hhplus.hhplus_concert_service.business.service.PointServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
-import org.hhplus.hhplus_concert_service.persistence.Point_repository;
-import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
+import org.hhplus.hhplus_concert_service.persistence.PointRepository;
+import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 class PointServiceTest {
 
     @Mock
-    private Point_repository pointRepository;
+    private PointRepository pointRepository;
 
     @Mock
-    private TokenQueue_repository tokenQueueRepository;
+    private TokenQueueRepository tokenQueueRepository;
 
     @InjectMocks
     private PointServiceImpl pointService;
@@ -39,7 +39,7 @@ class PointServiceTest {
         point.setPoint(100);
         tokenQueue = new TokenQueue();
         tokenQueue.setUserId("testUser");
-        tokenQueue.setStatus("진행");
+        tokenQueue.setStatus("P");
     }
 
     @Test
@@ -108,7 +108,7 @@ class PointServiceTest {
     public void testMinusPoint_InvalidTokenQueueStatus() {
         // Given
         when(pointRepository.findFirstByUserIdOrderByPointIdDesc("testUser")).thenReturn(point);
-        tokenQueue.setStatus("완료");
+        tokenQueue.setStatus("C");
         when(tokenQueueRepository.findByUserId("testUser")).thenReturn(tokenQueue);
 
         // When & Then

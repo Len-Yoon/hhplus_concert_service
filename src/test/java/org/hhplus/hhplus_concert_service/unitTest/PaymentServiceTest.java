@@ -2,7 +2,7 @@ package org.hhplus.hhplus_concert_service.unitTest;
 
 import org.hhplus.hhplus_concert_service.business.service.PaymentServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Payment;
-import org.hhplus.hhplus_concert_service.persistence.Payment_repository;
+import org.hhplus.hhplus_concert_service.persistence.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 class PaymentServiceTest {
 
     @Mock
-    private Payment_repository paymentRepository;
+    private PaymentRepository paymentRepository;
 
     @InjectMocks
     private PaymentServiceImpl paymentService;

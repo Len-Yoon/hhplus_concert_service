@@ -2,20 +2,19 @@ package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
-import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
+import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TokenQueueServiceImpl implements TokenQueueService {
 
     @Autowired
-    private TokenQueue_repository tokenQueueRepository;
+    private TokenQueueRepository tokenQueueRepository;
 
     private static final int MAX_ACTIVE_TOKENS = 50;
 

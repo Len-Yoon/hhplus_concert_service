@@ -1,15 +1,10 @@
 package org.hhplus.hhplus_concert_service.persistence;
 
-import org.aspectj.lang.annotation.Before;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Concert_repositoryTest {
 
     @Autowired
-    private Concert_repository concertRepository;
+    private ConcertRepository concertRepository;
 
     @Test
     public void setUp() {

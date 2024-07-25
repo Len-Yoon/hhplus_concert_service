@@ -2,11 +2,11 @@ package org.hhplus.hhplus_concert_service.unitTest;
 
 import org.hhplus.hhplus_concert_service.business.service.ReservationServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
-import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
-import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
-import org.hhplus.hhplus_concert_service.persistence.Reservation_repository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
+import org.hhplus.hhplus_concert_service.persistence.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
 
     @Mock
-    private Concert_repository concertRepository;
+    private ConcertRepository concertRepository;
 
     @Mock
-    private Concert_seat_repository concertSeatRepository;
+    private ConcertSeatRepository concertSeatRepository;
 
     @Mock
-    private Reservation_repository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @InjectMocks
     private ReservationServiceImpl reservationService;
@@ -55,8 +55,8 @@ class ReservationServiceTest {
         concert.setStatus("Y");
         when(concertRepository.findByConcertId(concertId)).thenReturn(concert);
 
-        Concert_seat concertSeat = new Concert_seat();
-        concertSeat.setStatus("예약가능");
+        ConcertSeat concertSeat = new ConcertSeat();
+        concertSeat.setStatus("Y");
         when(concertSeatRepository.findBySeatId(seatId)).thenReturn(concertSeat);
 
         reservationService.reservation(userId, concertId, itemId, seatId, totalPrice, status);
@@ -94,7 +94,7 @@ class ReservationServiceTest {
         int paymentId = 1;
 
         Reservation reservation = new Reservation();
-        reservation.setStatus("임시예약");
+        reservation.setStatus("T");
         when(reservationRepository.findByReservationId(reservationId)).thenReturn(reservation);
 
         reservationService.reservationCompleted(reservationId, paymentId);

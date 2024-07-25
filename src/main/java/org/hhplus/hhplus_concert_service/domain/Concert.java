@@ -14,16 +14,15 @@ import java.time.LocalDateTime;
 @Table (name = "concert")
 @AllArgsConstructor
 @NoArgsConstructor
-//@DynamicUpdate
+@DynamicUpdate
 public class Concert {
     @Id
     @NotNull(message = "concertId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int concertId;
     private String title;
     private String status;
     private LocalDateTime createdAt;
 
-    @Version
-    private int version;
 
 }

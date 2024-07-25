@@ -2,20 +2,18 @@ package org.hhplus.hhplus_concert_service.unitTest;
 
 import org.hhplus.hhplus_concert_service.business.service.TokenQueueServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
-import org.hhplus.hhplus_concert_service.persistence.TokenQueue_repository;
+import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.*;
 class TokenQueueServiceTest {
 
     @Mock
-    private TokenQueue_repository tokenQueueRepository;
+    private TokenQueueRepository tokenQueueRepository;
 
     @InjectMocks
     private TokenQueueServiceImpl tokenQueueService;

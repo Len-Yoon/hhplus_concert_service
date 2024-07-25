@@ -14,11 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class Concert_item {
+public class ConcertItem {
     @Id
     @NotNull(message = "itemId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int itemId;
     private int concertId;
     private LocalDateTime concertDate;
+
+    @Version
+    private long version;
 
 }

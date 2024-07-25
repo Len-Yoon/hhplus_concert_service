@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 @Table(name = "reservation")
 @AllArgsConstructor
 @NoArgsConstructor
-//@DynamicUpdate
+@DynamicUpdate
 public class Reservation {
     @Id
     @NotNull(message = "reservationId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reservationId;
     @NotNull(message = "userId cannot be empty.")
     private String userId;

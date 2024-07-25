@@ -1,101 +1,142 @@
 package org.hhplus.hhplus_concert_service.lockTest;
 
-import jakarta.persistence.OptimisticLockException;
-import org.hhplus.hhplus_concert_service.business.constans.ReservationConstants;
 import org.hhplus.hhplus_concert_service.business.service.ReservationService;
-import org.hhplus.hhplus_concert_service.business.service.ReservationServiceImpl;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
-import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
-import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
-import org.hhplus.hhplus_concert_service.persistence.Reservation_repository;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
+import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 public class ReservationLockTest {
+
+    private static final Logger log = LoggerFactory.getLogger(ReservationLockTest.class);
+
+    @Autowired
+    private ConcertRepository concertRepository;
+
+    @Autowired
+    private ConcertSeatRepository concertSeatRepository;
 
     @Autowired
     private ReservationService reservationService;
 
-    @Autowired
-    private Reservation_repository reservationRepository;
-
-    @Autowired
-    private Concert_repository concertRepository;
-
-    @Autowired
-    private Concert_seat_repository concertSeatRepository;
-
     @BeforeEach
-    @Transactional
-    public void setUp() {
-        Concert concert = new Concert();
-        concert.setConcertId(1);
+    void setUp() {
+        concertRepository.deleteAll();
+        concertSeatRepository.deleteAll();
+
+        Concert concert = new Concert();;
         concert.setStatus("Y");
+        concert.setCreatedAt(LocalDateTime.now());
         concertRepository.save(concert);
 
-        Concert_seat concertSeat = new Concert_seat();
-        concertSeat.setSeatId(1);
-        concertSeat.setStatus("예약가능");
+        ConcertSeat concertSeat = new ConcertSeat();
+        concertSeat.setStatus("Y");
+        concertSeat.setItemId(1);
+        concertSeat.setSeatNum(1);
         concertSeatRepository.save(concertSeat);
     }
 
     @Test
-    public void testOptimisticLocking() throws InterruptedException, ExecutionException {
+    @Rollback
+    @DisplayName("낙관적 락 테스트")
+    void testReservation_optimisticLocking() {
+        Runnable task1 = () -> {
+            reservationService.reservation("user1", 1, 1, 1, 100, "임시예약");
+        };
 
-        int numberOfThreads = 10;
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        List<Future<Void>> futures = new ArrayList<>();
+        Runnable task2 = () -> {
+            reservationService.reservation("user2", 1, 1, 1, 100, "임시예약");
+        };
 
-        for (int i = 0; i < numberOfThreads; i++) {
-            futures.add(executorService.submit(new ReservationTask()));
+        Runnable task3 = () -> {
+            reservationService.reservation("user3", 1, 1, 1, 100, "임시예약");
+        };
+
+        Runnable task4 = () -> {
+            reservationService.reservation("user4", 1, 1, 1, 100, "임시예약");
+        };
+
+        Thread thread1 = new Thread(task1);
+        Thread thread2 = new Thread(task2);
+        Thread thread3 = new Thread(task3);
+        Thread thread4 = new Thread(task4);
+
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
+        } catch (InterruptedException e) {
+            fail("Thread interrupted");
         }
 
-        int optimisticLockingFailureCount = 0;
-        for (Future<Void> future : futures) {
-            try {
-                future.get();
-            } catch (ExecutionException e) {
-                if (e.getCause() instanceof OptimisticLockException) {
-                    optimisticLockingFailureCount++;
-                }
-            }
-        }
-
-        executorService.shutdown();
-
-        assertTrue(optimisticLockingFailureCount > 0);
+        ConcertSeat concertSeat = concertSeatRepository.findBySeatId(1);
+        assertEquals("예약완료", concertSeat.getStatus());
     }
 
-    private class ReservationTask implements Callable<Void> {
+    @Test
+    @DisplayName("비관적 락 테스트")
+    public void testReservation_pessimisticLocking() throws InterruptedException {
 
-        @Override
-        public Void call() throws Exception {
+        Runnable task = () -> {
             try {
-                ReservationServiceImpl reservationService = new ReservationServiceImpl(concertRepository, concertSeatRepository, reservationRepository);
-
-                reservationService.reservation("user" + Thread.currentThread().getId(), 1, 1, 1, 1000, "예약완료");
-            } catch (OptimisticLockException e) {
-
-                throw e;
+                reservationService.reservation("user1", 1, 1, 1, 100, "임시예약");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
             }
-            return null;
-        }
+        };
+
+        Thread thread1 = new Thread(task);
+        Thread thread2 = new Thread(task);
+        Thread thread3 = new Thread(task);
+        Thread thread4 = new Thread(task);
+        Thread thread5 = new Thread(task);
+        Thread thread6 = new Thread(task);
+        Thread thread7 = new Thread(task);
+        Thread thread8 = new Thread(task);
+
+
+
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
+        thread5.start();
+        thread6.start();
+        thread7.start();
+        thread8.start();
+
+        thread1.join();
+        thread2.join();
+        thread3.join();
+        thread4.join();
+        thread5.join();
+        thread6.join();
+        thread7.join();
+        thread8.join();
+
+        ConcertSeat seat = concertSeatRepository.findBySeatId(1);
+
+        assertEquals("예약완료", seat.getStatus());
     }
-
-
 }

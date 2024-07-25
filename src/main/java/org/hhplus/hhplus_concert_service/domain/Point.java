@@ -17,6 +17,7 @@ import org.hibernate.annotations.DynamicUpdate;
 public class Point {
     @Id
     @NotNull(message = "pointId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int pointId;
     private String userId;
     private int point;
