@@ -108,7 +108,7 @@ public class ConcertSeat {
     private int version;
 ```
 
-<br>
+
 
 ```
 package org.hhplus.hhplus_concert_service.persistence;
@@ -142,7 +142,7 @@ public interface ConcertSeatRepository extends JpaRepository<ConcertSeat, Intege
 ```
 
 
-<br> 
+
 
 ```
 @Override
@@ -208,12 +208,15 @@ public interface ConcertSeatRepository extends JpaRepository<ConcertSeat, Intege
 ```
 
 #### Seat 조회에 낙관적 락을 건 이유
-제가 Seat 조회 코드에 낙관적 락은 건 이유는 조회 시 데이터의 버전을 기록해 두었다가, 저장 시점에 데이터가 변경되었는지 확인하기 위해서 낙관적 락을 사용하였습니다.
-하지만 충돌이 일어날 경우를 대비하여 5번의 Retry를 설정해 두었으며, 매 재시도 전에 1차 캐쉬를 clear하도록 설정하였습니다. 5번 다 시도한 경우 exception을 return하도록 설정하였습니다.
+제가 Seat 조회 코드에  읽기 작업에서 성능을 보장하면서 데이터의 충돌 가능성을 낮추면서 데이터를 읽어오는 과정을 성능을 보장하는 
+적합한 락이 낙관적 락이라 생각하였습니다. 만일 충돌이 일어날 경우를 대비하여 5번의 Retry를 설정해 두었으며, 매 재시도 전에 1차 캐쉬를 clear하도록 설정하였습니다. 
+5번 다 시도한 경우 RuntimeException을 이용하여 예외 처리되도록 설정하였습니다.
 
 #### save 부분에 비관적 락을 건 이유 
-예약정보를 저장하고 seat의 상태를 바꾸는 부분에 있어 성능 보단 무결성의 보장이 중요하다 생각하였습니다. 그렇기에 저장 시점에 다른 트랙잭션의 개입을 막기 위해 비관적 락을 사용하였습니다.
-만약 먼저 선점한 유저가 있어 사용을 못하게 된다면 exception을 return하도록 설정하였습니다.
+예약정보를 저장하고 seat의 상태를 변경하는 과정에서 충돌이 많을 것이라 생각하였습니다. 
+특정 좌석에 대한 예약이 이루어지는 동안 다른 트랜잭션이 해당 좌석에 접근하지 못하도록 보장하고
+좌석 예약과 관련된 중요한 상태 변경이 동시에 발생하지 않도록 방지하기 위해 비관적 락을 사용하였습니다.
+ObjectOptimisticLockingFailureException 이용하여 예외를 처리를 하였습니다.
 
 ## 2. Point Service
 ```
@@ -247,7 +250,7 @@ public class Point {
 
 ```
 
-<br>
+
 
 ```
 package org.hhplus.hhplus_concert_service.persistence;
@@ -266,7 +269,7 @@ public interface PointRepository extends JpaRepository<Point, Integer> {
 }
 ```
 
-<br>
+
 
 ```
   @Override
@@ -317,9 +320,9 @@ public interface PointRepository extends JpaRepository<Point, Integer> {
 ```
 
 #### 포인트 충전/차감 부분에 낙관적 락을 건 이유
-포인트 충전/차감 부분에서 유저의 여러 번의 중복 요청을 방지하기 낙관적 락을 사용하였습니다. 한 트랙잭션에 다수의 유저가 요청을 하는 경우가 아니기에 비관적 락보단 낙관적 락이 성능상 유리하다 생각하였고,
-잠금 메커니즘은 사용자의 의도치 않은 반복 클릭으로 인한 중복 거래를 방지하고, 시스템의 데이터 무결성을 유지하고 신뢰 있는 거래 시스템을 구축 하기 위해 필요하다고 생각했습니다. 
-충돌이 일어날 경우 exception을 return하도록 설정하였습니다.
+포인트 충전/차감 부분에서 잠금 메커니즘은 사용자의 의도치 않은 반복 클릭으로 인한 중복 거래를 방지하고, 시스템의 데이터 무결성을 유지하고 신뢰 있는 거래 시스템을 구축 하기 위해 필요하다고 생각했습니다. 
+한 트랙잭션에 다수의 유저가 요청을 하는 경우가 아니고 주로 읽기 작업의 비중이 더 높다 생각하였기에 비관적 락보단 낙관적 락이 성능상 유리하다 생각하였습니다.
+ObjectOptimisticLockingFailureException 이용하여 예외를 처리하였고, 롤백하고 재시도하는 방식으로 데이터의 일관성을 유지하였습니다.
 
 </details>
 
