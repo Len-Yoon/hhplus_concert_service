@@ -82,7 +82,7 @@
 <img width="663" alt="비관적 락" src="https://github.com/user-attachments/assets/72fc2563-01ff-4ab5-bd59-b1f67d22f866">
 <br><br>
 장점: 완벽한 충돌 방지 보장 <br>
-단점: ConccertSeat 조회부터 락을 걸어 작업이 오래걸리며 DeadLock 발생<br><br><br>
+단점: ConccertSeat 조회부터 락을 걸어 다른 유저의 서비스 방해 및 DeadLock 발생<br><br><br>
 
 <img width="667" alt="낙관적 락" src="https://github.com/user-attachments/assets/6db186dc-fedd-4854-b0e4-40d5ff85ab0a">
 <br><br>
