@@ -74,20 +74,30 @@
 
 ## STEP11
 <details>
+  <summary>락 이론 공부</summary>
+  https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C
+</details>
+
+<details>
 <summary>동시성 제어 시나리오</summary>
 
   ## 1. Reservation Service
 
+### 요구사항
+- 한 트랙잭션 당 한 자리만 예매 가능
+- 이미 예약된 자석이라면 마감된 좌석이라는 메세지 전달
+- 여러명이 동시에 한 자리 예약해도 가장 먼저 요청한 사용자만 좌석 예약
+
 ### 실패 솔루션 
 <img width="663" alt="비관적 락" src="https://github.com/user-attachments/assets/72fc2563-01ff-4ab5-bd59-b1f67d22f866">
 <br><br>
-장점: 완벽한 충돌 방지 보장 <br>
-단점: ConccertSeat 조회부터 락을 걸어 다른 유저의 서비스 방해 및 DeadLock 발생<br><br><br>
+장점: 간단한 코드 추가를 통한 요구사항 만족 가능<br>
+단점: 모든 트랜잭션에 대해 Lock을 사용하기에 트래픽이 많은경우 부하가 심할거 같음<br><br><br>
 
 <img width="667" alt="낙관적 락" src="https://github.com/user-attachments/assets/6db186dc-fedd-4854-b0e4-40d5ff85ab0a">
 <br><br>
 장점: 충돌 발생 시에만 Lock이 사용되기에 성능 보장<br>
-단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 시간 지연 및 예약 실패
+단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 서버 부하 예상
 
 ### 적용 솔루션
 <img width="544" alt="낙관+비관" src="https://github.com/user-attachments/assets/91933e1c-8814-4317-a79b-9144b8267643">
@@ -101,6 +111,9 @@
 낙관적 락을 사용하다 충돌 시, 1차 캐쉬를 초기화 하고, 재시도 로직을 통해 비관적 락의 충돌을 최소화하려고 노력하였습니다.
 
 ## 2. Point Service
+
+### 요구사항
+- 유저의 중복 포인트 충전/차감 방지
 
 ### 적용 솔루션
 <img width="665" alt="포인트 락" src="https://github.com/user-attachments/assets/b18595a3-d07e-4e49-b932-bc4af8b40389"> <br>
