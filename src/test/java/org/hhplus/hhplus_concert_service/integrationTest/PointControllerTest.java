@@ -1,12 +1,10 @@
 package org.hhplus.hhplus_concert_service.integrationTest;
 
-import org.hhplus.hhplus_concert_service.business.PointService;
+import org.hhplus.hhplus_concert_service.business.service.PointService;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.interfaces.controller.PointController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

@@ -1,13 +1,11 @@
 package org.hhplus.hhplus_concert_service.interfaces.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_item;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
-import org.hhplus.hhplus_concert_service.business.ConcertService;
+import org.hhplus.hhplus_concert_service.domain.ConcertItem;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
+import org.hhplus.hhplus_concert_service.business.service.ConcertService;
 import org.hhplus.hhplus_concert_service.interfaces.controller.dto.ConcertDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +34,7 @@ public class ConcertController {
 
     //콘서트 예약 날짜 조회
     @GetMapping("concertDate")
-    public List<Concert_item> checkConcertDate(@Valid @ModelAttribute ConcertDTO concertDTO) {
+    public List<ConcertItem> checkConcertDate(@Valid @ModelAttribute ConcertDTO concertDTO) {
         int concertId = concertDTO.getConcertId();
 
         return concertService.checkConcertDate(concertId);
@@ -44,7 +42,7 @@ public class ConcertController {
 
     //콘서트 예약 좌석 조회
     @GetMapping("concertSeat")
-    public List<Concert_seat> checkConcertSeat(@Valid @ModelAttribute ConcertDTO concertDTO) {
+    public List<ConcertSeat> checkConcertSeat(@Valid @ModelAttribute ConcertDTO concertDTO) {
         int itemId = concertDTO.getItemId();
 
         return concertService.checkConcertSeat(itemId);

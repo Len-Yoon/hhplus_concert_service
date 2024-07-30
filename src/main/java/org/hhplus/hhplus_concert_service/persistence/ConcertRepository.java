@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface Concert_repository extends JpaRepository<Concert, Integer> {
+public interface ConcertRepository extends JpaRepository<Concert, Integer> {
 
     //특정 콘서트 조회
     Concert findByConcertId(int concertId);

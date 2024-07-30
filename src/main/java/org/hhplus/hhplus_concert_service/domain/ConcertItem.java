@@ -6,22 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "concertSeat")
+@Table (name = "concertItem")
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class Concert_seat {
+public class ConcertItem {
     @Id
-    @NotNull(message = "seatId cannot be empty.")
-    private int seatId;
+    @NotNull(message = "itemId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int itemId;
-    private int seatNum;
-    private String status;
-    private int seatPrice;
+    private int concertId;
+    private LocalDateTime concertDate;
 
     @Version
-    private int version;
+    private long version;
+
 }

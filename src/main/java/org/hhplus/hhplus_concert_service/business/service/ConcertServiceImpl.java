@@ -1,13 +1,12 @@
-package org.hhplus.hhplus_concert_service.business;
+package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Concert;
-import org.hhplus.hhplus_concert_service.domain.Concert_item;
-import org.hhplus.hhplus_concert_service.domain.Concert_seat;
-import org.hhplus.hhplus_concert_service.exception.AllExceptions;
-import org.hhplus.hhplus_concert_service.persistence.Concert_item_repository;
-import org.hhplus.hhplus_concert_service.persistence.Concert_repository;
-import org.hhplus.hhplus_concert_service.persistence.Concert_seat_repository;
+import org.hhplus.hhplus_concert_service.domain.ConcertItem;
+import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
+import org.hhplus.hhplus_concert_service.persistence.ConcertItemRepository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
+import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,9 +19,9 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class  ConcertServiceImpl implements ConcertService {
 
-    private final Concert_repository concertRepository;
-    private final Concert_item_repository concertItemRepository;
-    private final Concert_seat_repository concertSeatRepository;
+    private final ConcertRepository concertRepository;
+    private final ConcertItemRepository concertItemRepository;
+    private final ConcertSeatRepository concertSeatRepository;
 
     @Override
     public List<Concert> checkConcert() {
@@ -36,8 +35,8 @@ public class  ConcertServiceImpl implements ConcertService {
     }
 
     @Override
-    public List<Concert_item> checkConcertDate(int concertId) {
-        List<Concert_item> concertItemList = concertItemRepository.findByConcertId(concertId);
+    public List<ConcertItem> checkConcertDate(int concertId) {
+        List<ConcertItem> concertItemList = concertItemRepository.findByConcertId(concertId);
 
         if (concertItemList.isEmpty())
             throw new NoSuchElementException();
@@ -46,11 +45,11 @@ public class  ConcertServiceImpl implements ConcertService {
     }
 
     @Override
-    public List<Concert_seat> checkConcertSeat(int itemId) {
-        List<Concert_seat> concertSeatList = concertSeatRepository.findAllByItemId(itemId);
+    public List<ConcertSeat> checkConcertSeat(int itemId) {
+        List<ConcertSeat> concertSeatList = concertSeatRepository.findAllByItemId(itemId);
+
         if (concertSeatList.isEmpty())
             throw new NoSuchElementException();
-
 
         return concertSeatRepository.findAllByItemId(itemId);
     }
@@ -58,10 +57,12 @@ public class  ConcertServiceImpl implements ConcertService {
     @Override
     public List checkConcertByConcertDate(LocalDate checkDate) {
 
-        List<Concert_item> concertItemList = concertItemRepository.findAll();
-        List<Concert_item> newConcertItemList = new ArrayList<>();
+        List<ConcertItem> concertItemList = concertItemRepository.findAll();
+        List<ConcertItem> newConcertItemList = new ArrayList<>();
 
         String checkDateStr = checkDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        if (checkDateStr.isEmpty())
+            throw new IllegalArgumentException();
 
         for(int i = 0; i < concertItemList.size(); i++){
             String date = String.valueOf(concertItemList.get(i).getConcertDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

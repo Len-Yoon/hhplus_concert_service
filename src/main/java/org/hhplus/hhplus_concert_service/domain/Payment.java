@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     @NotNull(message = "paymentId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int paymentId;
     private int reservationId;
     private int paymentAmount;

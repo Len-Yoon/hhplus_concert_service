@@ -1,11 +1,9 @@
 package org.hhplus.hhplus_concert_service.interfaces.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.Point;
-import org.hhplus.hhplus_concert_service.business.PointService;
+import org.hhplus.hhplus_concert_service.business.service.PointService;
 import org.hhplus.hhplus_concert_service.interfaces.controller.dto.PointDTO;
 import org.springframework.web.bind.annotation.*;
 

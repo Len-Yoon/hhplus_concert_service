@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface TokenQueue_repository extends JpaRepository<TokenQueue, Integer> {
+
+public interface TokenQueueRepository extends JpaRepository<TokenQueue, Integer> {
 
     List<TokenQueue> findByActiveTrueOrderByQueueIdAsc();
 
@@ -16,4 +17,6 @@ public interface TokenQueue_repository extends JpaRepository<TokenQueue, Integer
     TokenQueue findByUserId(String userId);
 
     TokenQueue deleteByQueueId(int queueId);
+
+    boolean findByToken(String token);
 }

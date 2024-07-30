@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 public class Concert {
     @Id
     @NotNull(message = "concertId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int concertId;
     private String title;
     private String status;
     private LocalDateTime createdAt;
-
 }

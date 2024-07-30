@@ -12,9 +12,9 @@
             <param-value>utf-8</param-value>
         </init-param>
     </filter>
-    <!-- EncodingFilter 맵핑하기(어떤 pattern의 요청이 왔을 때 동작하게 할 것인지 -->
+
     <filter-mapping>
         <filter-name>MyFilter</filter-name>
-        <url-pattern>/*</url-pattern><!-- context하위의 모든 요청에 대해 수행-->
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>
