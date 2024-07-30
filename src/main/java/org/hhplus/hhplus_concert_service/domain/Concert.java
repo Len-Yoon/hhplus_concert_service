@@ -23,6 +23,4 @@ public class Concert {
     private String title;
     private String status;
     private LocalDateTime createdAt;
-
-
 }

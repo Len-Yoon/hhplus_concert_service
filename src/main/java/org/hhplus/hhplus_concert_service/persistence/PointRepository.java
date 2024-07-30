@@ -11,6 +11,4 @@ public interface PointRepository extends JpaRepository<Point, Integer> {
     //유저 포인트 조회
     @Lock(LockModeType.OPTIMISTIC)
     Point findFirstByUserIdOrderByPointIdDesc(String userId);
-
-
 }
