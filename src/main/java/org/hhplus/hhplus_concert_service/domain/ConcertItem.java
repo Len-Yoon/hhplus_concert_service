@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +22,7 @@ public class ConcertItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int itemId;
     private int concertId;
-    private LocalDateTime concertDate;
+    private LocalDate concertDate;
 
     @Version
     private long version;

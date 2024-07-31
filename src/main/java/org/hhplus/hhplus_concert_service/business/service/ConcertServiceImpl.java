@@ -10,7 +10,9 @@ import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,7 +53,7 @@ public class  ConcertServiceImpl implements ConcertService {
         if (concertSeatList.isEmpty())
             throw new NoSuchElementException();
 
-        return concertSeatRepository.findAllByItemId(itemId);
+        return concertSeatList;
     }
 
     @Override
@@ -75,6 +77,49 @@ public class  ConcertServiceImpl implements ConcertService {
             throw new NoSuchElementException();
 
         return newConcertItemList;
+    }
+
+    @Override
+    public void concertInsert(String status, String title) {
+
+        Concert concert = new Concert();
+        concert.setStatus(status);
+        concert.setTitle(title);
+        concert.setCreatedAt(LocalDateTime.now());
+
+
+        concertRepository.save(concert);
+    }
+
+    @Override
+    public void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate) {
+        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
+
+        for(int i = 0; i < concertSize; i++) {
+            ConcertItem concertItem = new ConcertItem();
+
+            concertItem.setConcertDate(startDate.plusDays(i));
+            concertItem.setConcertId(concertId);
+
+            concertItemRepository.save(concertItem);
+        }
+    }
+
+    @Override
+    public void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status) {
+
+        String[] seatPriceList = seatPrice.split(",");
+
+        for(int i = 0; i < seatSize; i++) {
+            ConcertSeat concertSeat = new ConcertSeat();
+
+            concertSeat.setSeatNum(i+1);
+            concertSeat.setSeatPrice(Integer.parseInt(seatPriceList[i]));
+            concertSeat.setStatus(status);
+            concertSeat.setItemId(itemId);
+
+            concertSeatRepository.save(concertSeat);
+        }
     }
 
 
