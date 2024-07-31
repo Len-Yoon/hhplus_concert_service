@@ -13,10 +13,11 @@ import java.util.List;
 public interface ConcertService {
 
     //콘서트 목록 조회
-//    @Cacheable(value = "concert_status_cache", cacheManager = "contentCacheManager")
+    @Cacheable(value = "concert_status_cache", cacheManager = "contentCacheManager")
     List<Concert> checkConcert();
 
     //콘서트 예약 날짜 조회
+    @Cacheable(value = "concert_date_cache", cacheManager = "contentCacheManager")
     List<ConcertItem> checkConcertDate(int concertId);
 
     //콘서트 예약 좌석 조회
@@ -30,7 +31,7 @@ public interface ConcertService {
     void concertInsert(String status, String title);
 
     //콘서트 Item 입력
-    @CacheEvict(value = "concertItem_cache", allEntries = true)
+    @CacheEvict(value = "concert_date_cache", allEntries = true)
     void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate);
 
     //콘서트 Seat 입력

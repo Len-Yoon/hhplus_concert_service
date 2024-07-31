@@ -34,6 +34,7 @@ public class ConcertController {
     @GetMapping("concertDate")
     public List<ConcertItem> checkConcertDate(@Valid @ModelAttribute ConcertDTO concertDTO) {
         int concertId = concertDTO.getConcertId();
+        log.info("concertId ==" + concertId);
 
         return concertService.checkConcertDate(concertId);
     }

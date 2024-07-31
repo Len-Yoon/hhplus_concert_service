@@ -40,8 +40,9 @@ public class  ConcertServiceImpl implements ConcertService {
     public List<ConcertItem> checkConcertDate(int concertId) {
         List<ConcertItem> concertItemList = concertItemRepository.findByConcertId(concertId);
 
-        if (concertItemList.isEmpty())
+        if (concertItemList.isEmpty()) {
             throw new NoSuchElementException();
+        }
 
         return concertItemList;
     }
