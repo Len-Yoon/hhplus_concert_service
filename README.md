@@ -82,6 +82,11 @@ https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%
 
 <details>
 <summary>캐시 적용 성능 차이</summary>
+
+#### 테스트 적용 PC
+CPU: Razen7 3700u (4코어 8쓰레드)<br>
+RAM: DDR4 2400 16GB<br>
+OS: Windows 10 Professional<br>
   
 #### 1. 예약 가능 콘서트 조회 API 캐싱 <br>
 ##### 적용이유 <br>
