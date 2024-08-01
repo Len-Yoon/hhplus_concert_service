@@ -87,6 +87,9 @@ https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%
 CPU: Razen7 3700u (4코어 8쓰레드)<br>
 RAM: DDR4 2400 16GB<br>
 OS: Windows 10 Professional<br>
+
+#### 테스트 방식
+K6 과부화 테스트 진행
   
 #### 1. 예약 가능 콘서트 조회 API 캐싱 <br>
 ##### 적용이유 <br>
