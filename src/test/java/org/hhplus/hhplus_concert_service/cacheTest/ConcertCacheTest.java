@@ -36,32 +36,32 @@ public class ConcertCacheTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @MockBean
+    @Autowired
     private ConcertRepository concertRepository;
 
-    @MockBean
+    @Autowired
     private ConcertItemRepository concertItemRepository;
 
-    @MockBean
+    @Autowired
     private ConcertSeatRepository concertSeatRepository;
 
     private List<Concert> concerts;
 
-    @BeforeEach
-    public void setUp() {
-        Concert concert1 = new Concert();
-        Concert concert2 = new Concert();
-
-        concerts = Arrays.asList(concert1, concert2);
-
-        when(concertRepository.findByStatus("Y")).thenReturn(concerts);
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        Concert concert1 = new Concert();
+//        Concert concert2 = new Concert();
+//
+//        concerts = Arrays.asList(concert1, concert2);
+//
+//        when(concertRepository.findByStatus("Y")).thenReturn(concerts);
+//    }
 
     @Test
     @DisplayName("대량 데이터 입력")
     void SetUpData() {
 
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 1000; i++) {
             Concert concert = new Concert();
             concert.setStatus("Y");
             concert.setTitle("TEST"+i);
