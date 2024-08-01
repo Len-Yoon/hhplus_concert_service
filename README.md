@@ -113,7 +113,7 @@ Dummy Data: 1000개 <br>
 콘서트의 옵션을 read 하는 API로써 예약 가능 콘서트 API와 동등한 read를 합니다.
 ##### 테스트 시나리오 <br>
 Dummy Data: 200개 <br>
-1초 당 5000명의 API 요청을 30초 동안 부하
+1초 당 4000명의 API 요청을 30초 동안 부하
 ##### 테스트 결과 <br>
 <img width="400" alt="concertItem_not_cache" src="https://github.com/user-attachments/assets/0e0b5252-da40-40db-a7e6-f7cc88978bc3">
 &emsp;
