@@ -8,6 +8,9 @@ import org.hhplus.hhplus_concert_service.persistence.PointRepository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -44,16 +47,16 @@ public class PointServiceImpl implements PointService {
 
     //낙관적 락 적용
     @Override
-    public void minusPoint(String userId, int totalPrice) {
+    public void minusPoint(String userId, int totalPrice, int concertId) {
 
         Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
-        TokenQueue tokenQueue = tokenQueueRepository.findByUserId(userId);
+        TokenQueue tokenQueue = tokenQueueRepository.findByUserIdAndConcertId(userId, concertId);
 
         int holdPoint = point.getPoint();
-        String status = tokenQueue.getStatus();
+        String token = tokenQueue.getToken();
 
         try {
-            if(!TokenConstants.STATUS_IN_PROGRESS.equals(status)) {
+            if(token.isEmpty()) {
                 throw new RuntimeException();
             } else {
                 if(holdPoint < totalPrice) {

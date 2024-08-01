@@ -21,9 +21,9 @@ public class ConcertDTO {
     private String status;
     @NotNull(message = "title must not be null")
     private String title;
-    @NotNull@NotNull(message = "startDate must not be null")
+    @NotNull(message = "startDate must not be null")
     private LocalDate startDate;
-    @NotNull@NotNull(message = "endDate must not be null")
+    @NotNull(message = "endDate must not be null")
     private LocalDate endDate;
 
     @NotNull(message = "concertId must not be null")

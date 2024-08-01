@@ -37,8 +37,9 @@ public class PointController {
     public void minusPoint(@Valid @ModelAttribute PointDTO pointDTO) {
        String userId = pointDTO.getUserId();
        int totalPrice = pointDTO.getTotalPoint();
+       int concertId = pointDTO.getConcertId();
 
-       pointService.minusPoint(userId, totalPrice);
+       pointService.minusPoint(userId, totalPrice, concertId);
     }
 
 }

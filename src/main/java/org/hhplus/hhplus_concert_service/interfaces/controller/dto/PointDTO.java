@@ -9,28 +9,41 @@ public class PointDTO {
     private int chargePoint;
     @NotNull(message = "totalPoint must not be null")
     private int totalPoint;
+    @NotNull(message = "concertId must not be null")
+    private int concertId;
 
-    public String getUserId() {
+    public @NotNull(message = "userId must not be null") String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(@NotNull(message = "userId must not be null") String userId) {
         this.userId = userId;
     }
 
+    @NotNull(message = "chargePoint must not be null")
     public int getChargePoint() {
         return chargePoint;
     }
 
-    public void setChargePoint(int chargePoint) {
+    public void setChargePoint(@NotNull(message = "chargePoint must not be null") int chargePoint) {
         this.chargePoint = chargePoint;
     }
 
+    @NotNull(message = "totalPoint must not be null")
     public int getTotalPoint() {
         return totalPoint;
     }
 
-    public void setTotalPoint(int totalPoint) {
+    public void setTotalPoint(@NotNull(message = "totalPoint must not be null") int totalPoint) {
         this.totalPoint = totalPoint;
+    }
+
+    @NotNull(message = "concertId must not be null")
+    public int getConcertId() {
+        return concertId;
+    }
+
+    public void setConcertId(@NotNull(message = "concertId must not be null") int concertId) {
+        this.concertId = concertId;
     }
 }
