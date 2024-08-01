@@ -46,8 +46,10 @@
 
 ### 마일스톤
 <details>
-  <summary>Step9 마일스톤</summary>
-  <li><img width="865" alt="마일스톤" src="https://github.com/user-attachments/assets/f63bf13f-2c33-4491-b407-26de784f4279">
+  <summary>마일스톤</summary>
+  <li>
+    <img width="1029" alt="마일스톤" src="https://github.com/user-attachments/assets/3f7307e9-0d13-4f24-a364-2af9366696de">
+
  </li>
 </details>
 
@@ -72,56 +74,64 @@
 
 <br>
 
-## STEP11
+## STEP13
 <details>
-  <summary>락 이론 공부</summary>
-  https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C
+  <summary>Redis 캐시 이론</summary>
+https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90-
 </details>
 
 <details>
-<summary>동시성 제어 시나리오</summary>
+<summary>캐시 적용 성능 차이</summary>
 
-  ## 1. Reservation Service
+#### 테스트 적용 PC
+CPU: Razen7 3700u (4코어 8쓰레드)<br>
+RAM: DDR4 2400 16GB<br>
+OS: Windows 10 Professional<br>
 
-### 요구사항
-- 한 트랙잭션 당 한 자리만 예매 가능
-- 이미 예약된 자석이라면 마감된 좌석이라는 메세지 전달
-- 여러명이 동시에 한 자리 예약해도 가장 먼저 요청한 사용자만 좌석 예약
+#### 테스트 방식
+K6 과부화 테스트 진행
+  
+#### 1. 예약 가능 콘서트 조회 API 캐싱 <br>
+##### 적용이유 <br>
+유저가 콘서트 예매를 위한 첫 단계로서 예약가능 콘서트를 read하는 기능으로 변화가 적을거라 생각하기에 캐싱을 걸었습니다.
+##### 테스트 시나리오 <br>
+Dummy Data: 1000개 <br>
+1초 당 3000명의 API 요청을 30초 동안 부하
+##### 테스트 결과 <br>
+<img width="400" alt="concert_not_with_cache" src="https://github.com/user-attachments/assets/76b86a4b-8f9f-4188-9834-f1a2b4f5423b">
+&emsp;
+<img width="400" alt="concert_with_cache" src="https://github.com/user-attachments/assets/27137066-00e4-4655-a390-cc36244548e0"> <br>
+왼- 캐시 미적용 / 오 - 캐시 적용
 
-### 실패 솔루션 
-<img width="663" alt="비관적 락" src="https://github.com/user-attachments/assets/72fc2563-01ff-4ab5-bd59-b1f67d22f866">
-<br><br>
-장점: 간단한 코드 추가를 통한 요구사항 만족 가능<br>
-단점: 모든 트랜잭션에 대해 Lock을 사용하기에 트래픽이 많은경우 부하가 심할거 같음<br><br><br>
+##### 결과 보고 <br>
+캐시 미적용: 32.2초 / 42378건 완료 <br>
+캐시 적용: 31.1초 / 54741건 완료 <br><br>
 
-<img width="667" alt="낙관적 락" src="https://github.com/user-attachments/assets/6db186dc-fedd-4854-b0e4-40d5ff85ab0a">
-<br><br>
-장점: 충돌 발생 시에만 Lock이 사용되기에 성능 보장<br>
-단점: 한번에 성공 시 속도가 보장되나 Retry로 인한 서버 부하 예상
+캐싱 적용으로 초 당 30%의 성능 향상을 확인 할 수 있었습니다 <br> 
+또한 캐시 미적용의 경우 초 당 3000건이 넘어가면 fail을 하는 확률이 점점 늘어나는 반면에 <br>
+캐시 적용의 경우 초 당 10000건 까지 안정적이 성능을 보여주었습니다.
 
-### 적용 솔루션
-<img width="544" alt="낙관+비관" src="https://github.com/user-attachments/assets/91933e1c-8814-4317-a79b-9144b8267643">
- <br>
- 
-#### 이유<br>
+#### 2. 예약 가능 콘서트 조회 API 캐싱 <br>
+##### 적용이유 <br>
+콘서트의 옵션을 read 하는 API로써 예약 가능 콘서트 API와 동등한 read를 합니다.
+##### 테스트 시나리오 <br>
+Dummy Data: 200개 <br>
+1초 당 4000명의 API 요청을 30초 동안 부하
+##### 테스트 결과 <br>
+<img width="400" alt="concertItem_not_cache" src="https://github.com/user-attachments/assets/0e0b5252-da40-40db-a7e6-f7cc88978bc3">
+&emsp;
+<img width="400" alt="concertItem_with_cache" src="https://github.com/user-attachments/assets/ccf2033f-a5c8-4b3e-8d2a-da868bd0d87d"> <br>
 
-제가 낙관적 락과 비관적 락을 동시에 사용한 가장 큰 이유는 성능과 안정성의 균형을 맞추고 싶었기 때문입니다.
-낙관적 락을 이용하여 읽기 성능을 유지하고, 비관적 락을 통해 ConcertSeat의 상태를 변경 할 때 충돌을 방지하기 위해서 입니다.
+왼- 캐시 미적용 / 오 - 캐시 적용
 
-낙관적 락을 사용하다 충돌 시, 1차 캐쉬를 초기화 하고, 재시도 로직을 통해 비관적 락의 충돌을 최소화하려고 노력하였습니다.
+##### 결과 보고 <br>
+캐시 미적용: 31.9초 / 60284건 완료 <br>
+캐시 적용: 31.3초 / 94777건 완료 <br><br>
 
-## 2. Point Service
+캐싱 적용으로 초 당 50%의 성능 향상을 확인 할 수 있었습니다 <br> 
+또한 캐시 미적용의 경우 초 당 4000건이 넘어가면 fail을 하는 확률이 점점 늘어나는 반면에 <br>
+캐시 적용의 경우 초 당 13000건 까지 안정적이 성능을 보여주었습니다.
 
-### 요구사항
-- 유저의 중복 포인트 충전/차감 방지
-
-### 적용 솔루션
-<img width="665" alt="포인트 락" src="https://github.com/user-attachments/assets/b18595a3-d07e-4e49-b932-bc4af8b40389"> <br>
-#### 이유<br>
-
-포인트 충전/차감에 있어 가장 많이 발생할 수 있는 충돌은 동일한 사용자가 동시에 수행할 수 있기 때문에 충돌이 발생하는 경우라고 생각했습니다.
-그렇기에 충돌의 빈도가 적다고 생각하였습니다. 그렇기에 성능과 데이터의 일관성을 균형 있게 유지하기 위해 낙관적 락을 적용하였고, 충돌이 발생 시에만
-ObjectOptimisticLockingFailureException이 발생하도록 하였고, RollBack이 되도록 코드를 구현하였습니다.
 </details>
 
 ## STEP12
