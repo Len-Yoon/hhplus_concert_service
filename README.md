@@ -112,7 +112,6 @@ Dummy Data: 200개 <br>
 1초 당 5000명의 API 요청을 30초 동안 부하
 ##### 테스트 결과 <br>
 <img width="400" alt="concertItem_not_cache" src="https://github.com/user-attachments/assets/0e0b5252-da40-40db-a7e6-f7cc88978bc3">
-
 &emsp;
 <img width="400" alt="concertItem_with_cache" src="https://github.com/user-attachments/assets/ccf2033f-a5c8-4b3e-8d2a-da868bd0d87d"> <br>
 
