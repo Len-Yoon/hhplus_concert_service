@@ -16,15 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @DynamicUpdate
 public class TokenQueue {
+
     @Id
     @NotNull(message = "queueId cannot be empty.")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int queueId;
-    @NotNull(message = "userId cannot be empty.")
     private String userId;
     private String token;
-    private String status;
-    private LocalDateTime issuedAt;
     private boolean active;
-
+    private LocalDateTime issuedAt;
+    private int concertId;
 }

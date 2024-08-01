@@ -17,15 +17,41 @@ public class TokenController {
 
     private final TokenQueueService tokenQueueService;
 
-    @PostMapping("/generate")
-    public void generateTokenForUser(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
+//    @PostMapping("/generate")
+//    public void generateTokenForUser(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
+//        String userId = tokenQueueDTO.getUserId();
+//        tokenQueueService.generateTokenForUser(userId);
+//    }
+//
+//    @GetMapping("/getToken")
+//    public TokenQueue getToken(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
+//        String status = tokenQueueDTO.getStatus();
+//        return tokenQueueService.getToken(status);
+//    }
+
+    // 대기열 사용자 추가
+    @PostMapping("/add")
+    public void addTokenQueue(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
         String userId = tokenQueueDTO.getUserId();
-        tokenQueueService.generateTokenForUser(userId);
+        int concertId = tokenQueueDTO.getConcertId();
+
+        tokenQueueService.addTokenQueue(userId, concertId);
     }
 
-    @GetMapping("/all")
-    public List<TokenQueue> getAllTokens() {
-        return tokenQueueService.getAllTokens();
+    // 대기열 토큰 활성화
+    @PostMapping("/active")
+    public void activateTokens(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
+        int concertId = tokenQueueDTO.getConcertId();
+
+        tokenQueueService.activateTokens(concertId);
+    }
+
+    //특정 토큰 유효성 확인
+    @GetMapping("/validate")
+    public Boolean isTokenValid(@RequestParam int concertId, @RequestParam String token) {
+        boolean isValid = tokenQueueService.isTokenValid(concertId, token);
+
+        return isValid;
     }
 
 }

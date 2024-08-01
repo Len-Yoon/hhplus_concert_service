@@ -4,75 +4,102 @@ import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TokenQueueServiceImpl implements TokenQueueService {
 
     @Autowired
+    private RedisTemplate<String, TokenQueue> redisTemplate;
+
+    @Autowired
     private TokenQueueRepository tokenQueueRepository;
 
-    private static final int MAX_ACTIVE_TOKENS = 50;
-
     @Override
-    public void generateTokenForUser(String userId) {
-        int activeCount = tokenQueueRepository.countByActiveTrue();
+    public void addTokenQueue(String userId, int concertId) {
         TokenQueue token = new TokenQueue();
-        if(activeCount < MAX_ACTIVE_TOKENS){
-            token.setActive(true);
-            token.setToken(generateToken((token.getQueueId())));
-            token.setIssuedAt(LocalDateTime.now());
-        } else {
-            token.setActive(false);
-        }
+        token.setUserId(userId);
+        token.setToken(generateToken());
+        token.setActive(false);
+        token.setIssuedAt(LocalDateTime.now());
+        token.setConcertId(concertId);
 
+        long score = System.currentTimeMillis();
+        redisTemplate.opsForZSet().add(getQueueKey(String.valueOf(concertId)), token, score);
         tokenQueueRepository.save(token);
     }
 
     @Override
-    public void issueTokens() {
-        List<TokenQueue> inactiveTokens = tokenQueueRepository.findByActiveFalseOrderByQueueIdAsc();
+    public void activateTokens(int concertId) {
+        int batchSize = 3000;
+        String queueKey = getQueueKey(String.valueOf(concertId));
+        Set<ZSetOperations.TypedTuple<TokenQueue>> tokens = redisTemplate.opsForZSet().rangeWithScores(queueKey, 0, batchSize - 1);
 
-        for(TokenQueue token : inactiveTokens){
-            int activeCount = tokenQueueRepository.countByActiveTrue();
-            if(activeCount < MAX_ACTIVE_TOKENS){
+        if (tokens != null) {
+            tokens.forEach(tuple -> {
+                TokenQueue token = tuple.getValue();
                 token.setActive(true);
-                token.setToken(generateToken((token.getQueueId())));
-                token.setIssuedAt(LocalDateTime.now());
-                tokenQueueRepository.save(token);
-            } else {
-                break;
-            }
-
+                redisTemplate.opsForZSet().remove(queueKey, token);
+                redisTemplate.opsForZSet().add(queueKey, token, tuple.getScore());
+            });
         }
     }
 
     @Override
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(int concertId, String token) {
+        Set<ZSetOperations.TypedTuple<TokenQueue>> tokens = redisTemplate.opsForZSet().rangeWithScores(getQueueKey(String.valueOf(concertId)), 0, -1);
+        if (tokens != null) {
+            return tokens.stream().anyMatch(tuple -> tuple.getValue().getToken().equals(token));
+        }
 
-        return tokenQueueRepository.findByToken(token);
+        return false;
     }
 
     @Override
-    public List<TokenQueue> getAllTokens() {
-        return tokenQueueRepository.findAll();
+    public List<TokenQueue> getAllTokens(int concertId) {
+        Set<ZSetOperations.TypedTuple<TokenQueue>> tokens = redisTemplate.opsForZSet().rangeWithScores(getQueueKey(String.valueOf(concertId)), 0, -1);
+        return tokens != null ? tokens.stream().map(ZSetOperations.TypedTuple::getValue).collect(Collectors.toList()) : List.of();
     }
 
     @Override
-    public TokenQueue getToken(String userId) {
-        return tokenQueueRepository.findByUserId(userId);
+    public TokenQueue getToken(int concertId, String userId) {
+        Set<ZSetOperations.TypedTuple<TokenQueue>> tokens = redisTemplate.opsForZSet().rangeWithScores(getQueueKey(String.valueOf(concertId)), 0, -1);
+        if (tokens != null) {
+            return tokens.stream().map(ZSetOperations.TypedTuple::getValue)
+                    .filter(t -> t.getUserId().equals(userId))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
     }
 
     @Override
-    public void deleteToken(int queueId) {
-        tokenQueueRepository.deleteByQueueId(queueId);
+    public void deleteToken(int concertId, String token) {
+        Set<ZSetOperations.TypedTuple<TokenQueue>> tokens = redisTemplate.opsForZSet().rangeWithScores(getQueueKey(String.valueOf(concertId)), 0, -1);
+        if (tokens != null) {
+            tokens.stream().map(ZSetOperations.TypedTuple::getValue)
+                    .filter(t -> t.getToken().equals(token))
+                    .findFirst()
+                    .ifPresent(t -> redisTemplate.opsForZSet().remove(getQueueKey(String.valueOf(concertId)), t));
+
+            tokenQueueRepository.deleteByToken(token);
+        }
     }
 
-    private String generateToken(int queueId) {
-        return "TOKEN_" + queueId;
+    private String getQueueKey(String concertId) {
+        return "token_queue_" + concertId;
     }
+
+    private String generateToken() {
+        return "TOKEN_" + System.currentTimeMillis();
+    }
+
 }

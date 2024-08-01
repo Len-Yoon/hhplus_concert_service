@@ -6,6 +6,8 @@ public class TokenQueueDTO {
 
     @NotNull(message = "userId must not be null")
     private String userId;
+    private String status;
+    private int concertId;
 
     public String getUserId() {
         return userId;
@@ -13,5 +15,21 @@ public class TokenQueueDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getConcertId() {
+        return concertId;
+    }
+
+    public void setConcertId(int concertId) {
+        this.concertId = concertId;
     }
 }

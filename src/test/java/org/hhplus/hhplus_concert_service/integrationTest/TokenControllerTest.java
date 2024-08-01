@@ -36,21 +36,21 @@ class TokenControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void generateTokenForUser() throws Exception{
-        doNothing().when(tokenQueueService).generateTokenForUser(any(String.class));
-
-        mockMvc.perform(post("/token/generate").param("userId", "testUser"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void getAllTokens() throws Exception {
-        List<TokenQueue> tokenQueues = Collections.singletonList(new TokenQueue());
-        when(tokenQueueService.getAllTokens()).thenReturn(tokenQueues);
-
-        mockMvc.perform(get("/token/all"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{}]"));
-    }
+//    @Test
+//    void generateTokenForUser() throws Exception{
+//        doNothing().when(tokenQueueService).generateTokenForUser(any(String.class));
+//
+//        mockMvc.perform(post("/token/generate").param("userId", "testUser"))
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void getAllTokens() throws Exception {
+//        List<TokenQueue> tokenQueues = Collections.singletonList(new TokenQueue());
+//        when(tokenQueueService.getAllTokens()).thenReturn(tokenQueues);
+//
+//        mockMvc.perform(get("/token/all"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json("[{}]"));
+//    }
 }

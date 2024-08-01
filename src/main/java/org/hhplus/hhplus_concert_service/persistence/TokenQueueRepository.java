@@ -8,15 +8,9 @@ import java.util.List;
 
 public interface TokenQueueRepository extends JpaRepository<TokenQueue, Integer> {
 
-    List<TokenQueue> findByActiveTrueOrderByQueueIdAsc();
 
-    List<TokenQueue> findByActiveFalseOrderByQueueIdAsc();
+    TokenQueue findByUserIdAndConcertId(String userId, int concertId);
 
-    int countByActiveTrue();
+    TokenQueue deleteByToken(String token);
 
-    TokenQueue findByUserId(String userId);
-
-    TokenQueue deleteByQueueId(int queueId);
-
-    boolean findByToken(String token);
 }

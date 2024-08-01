@@ -13,14 +13,8 @@ import java.io.IOException;
 
 @Component
 public class MyFilter implements Filter {
+
     private static final Logger log = LoggerFactory.getLogger(MyFilter.class);
-
-    private final TokenQueueService tokenQueueService;
-
-    public MyFilter(TokenQueueService tokenQueueService) {
-        this.tokenQueueService = tokenQueueService;
-    }
-
 
     //초기화 작업
     @Override
@@ -34,14 +28,6 @@ public class MyFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         log.info("Request URI: {}", req.getRequestURL());
-
-        // 토큰 대기열 검증 기능 추가
-        String token = req.getHeader("Authorization");
-        if (token != null && !tokenQueueService.isTokenValid(token)) {
-            log.info("Invalid or inactive token: {}", token);
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or inactive token");
-            return;
-        }
 
         chain.doFilter(request, response);
     }
