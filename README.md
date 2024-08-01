@@ -83,10 +83,49 @@ https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%
 <details>
 <summary>캐시 적용 성능 차이</summary>
   
-#### 1. 예약 가능 콘서트 조회 API 캐싱
-적용이유: 
-Dummy Data: 1000개<br>
-<img width="705" alt="성능테스트" src="https://github.com/user-attachments/assets/dd03712f-1156-49f3-b889-af2664606b5b">
+#### 1. 예약 가능 콘서트 조회 API 캐싱 <br>
+##### 적용이유 <br>
+유저가 콘서트 예매를 위한 첫 단계로서 예약가능 콘서트를 read하는 기능으로 변화가 적을거라 생각하기에 캐싱을 걸었습니다.
+##### 테스트 시나리오 <br>
+Dummy Data: 1000개 <br>
+1초 당 3000명의 API 요청을 30초 동안 부하
+##### 테스트 결과 <br>
+<img width="400" alt="concert_not_with_cache" src="https://github.com/user-attachments/assets/76b86a4b-8f9f-4188-9834-f1a2b4f5423b">
+&emsp;
+<img width="400" alt="concert_with_cache" src="https://github.com/user-attachments/assets/27137066-00e4-4655-a390-cc36244548e0"> <br>
+왼- 캐시 미적용 / 오 - 캐시 적용
+
+##### 결과 보고 <br>
+캐시 미적용: 32.2초 / 42378건 완료 <br>
+캐시 적용: 31.1초 / 54741건 완료 <br><br>
+
+##### 느낀 점
+일단 캐싱 적용으로 초 당 30%의 성능 향상을 확인 할 수 있었습니다 <br> 
+또한 캐시 미적용의 경우 초 당 3000건이 넘어가면 fail을 하는 확률이 점점 늘어나는 반면에 <br>
+캐시 적용의 경우 초 당 10000건 까지 안정적이 성능을 보여주었습니다.
+
+#### 2. 예약 가능 콘서트 조회 API 캐싱 <br>
+##### 적용이유 <br>
+콘서트의 옵션을 read 하는 API로써 예약 가능 콘서트 API와 동등한 read를 합니다.
+##### 테스트 시나리오 <br>
+Dummy Data: 200개 <br>
+1초 당 5000명의 API 요청을 30초 동안 부하
+##### 테스트 결과 <br>
+<img width="400" alt="concertItem_not_cache" src="https://github.com/user-attachments/assets/0e0b5252-da40-40db-a7e6-f7cc88978bc3">
+
+&emsp;
+<img width="400" alt="concertItem_with_cache" src="https://github.com/user-attachments/assets/ccf2033f-a5c8-4b3e-8d2a-da868bd0d87d"> <br>
+
+왼- 캐시 미적용 / 오 - 캐시 적용
+
+##### 결과 보고 <br>
+캐시 미적용: 31.9초 / 60284건 완료 <br>
+캐시 적용: 31.3초 / 94777건 완료 <br>
+
+##### 느낀 점 <br>
+일단 캐싱 적용으로 초 당 50%의 성능 향상을 확인 할 수 있었습니다 <br> 
+또한 캐시 미적용의 경우 초 당 4000건이 넘어가면 fail을 하는 확률이 점점 늘어나는 반면에 <br>
+캐시 적용의 경우 초 당 13000건 까지 안정적이 성능을 보여주었습니다.
 
 </details>
 
