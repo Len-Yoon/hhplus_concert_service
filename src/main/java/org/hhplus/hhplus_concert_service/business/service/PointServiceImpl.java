@@ -67,6 +67,7 @@ public class PointServiceImpl implements PointService {
                     newPoint.setPoint(point.getPoint() - totalPrice);
 
                     pointRepository.save(newPoint);
+                    tokenQueueRepository.deleteByUserIdAndConcertId(userId, concertId);
                 }
             }
         } catch (ObjectOptimisticLockingFailureException e) {

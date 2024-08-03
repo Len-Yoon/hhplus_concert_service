@@ -13,4 +13,6 @@ public interface TokenQueueRepository extends JpaRepository<TokenQueue, Integer>
 
     TokenQueue deleteByToken(String token);
 
+    TokenQueue deleteByUserIdAndConcertId(String userId, int concertId);
+
 }

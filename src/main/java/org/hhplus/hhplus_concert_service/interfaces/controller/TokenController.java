@@ -37,21 +37,4 @@ public class TokenController {
 
         tokenQueueService.addTokenQueue(userId, concertId);
     }
-
-    // 대기열 토큰 활성화
-    @PostMapping("/active")
-    public void activateTokens(@Valid @ModelAttribute TokenQueueDTO tokenQueueDTO) {
-        int concertId = tokenQueueDTO.getConcertId();
-
-        tokenQueueService.activateTokens(concertId);
-    }
-
-    //특정 토큰 유효성 확인
-    @GetMapping("/validate")
-    public Boolean isTokenValid(@RequestParam int concertId, @RequestParam String token) {
-        boolean isValid = tokenQueueService.isTokenValid(concertId, token);
-
-        return isValid;
-    }
-
 }
