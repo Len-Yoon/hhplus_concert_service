@@ -13,15 +13,17 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class Concert_seat {
+public class ConcertSeat {
     @Id
     @NotNull(message = "seatId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int seatId;
     private int itemId;
     private int seatNum;
     private String status;
     private int seatPrice;
 
+    //낙관적 락 사용
     @Version
     private int version;
 }

@@ -1,7 +1,6 @@
 package org.hhplus.hhplus_concert_service.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
 public class Reservation {
     @Id
     @NotNull(message = "reservationId cannot be empty.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reservationId;
     @NotNull(message = "userId cannot be empty.")
     private String userId;
@@ -29,5 +29,8 @@ public class Reservation {
     private int totalPrice;
     private String status;
     private LocalDateTime createdAt;
+
+    @Version
+    private int version;
 
 }

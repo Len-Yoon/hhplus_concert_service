@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface Reservation_repository extends JpaRepository<Reservation, Integer> {
+
+public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
     //유저 예약내역 조회
     List<Reservation> findAllByUserId(String userId);
