@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class PointServiceImpl implements PointService {
         return pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
     }
 
+    @Transactional
     @Override
     public void plusPoint(String userId, int chargePoint) {
 
@@ -48,6 +50,7 @@ public class PointServiceImpl implements PointService {
     }
 
     //낙관적 락 적용
+    @Transactional
     @Override
     public void minusPoint(String userId, int totalPrice, int concertId) {
 

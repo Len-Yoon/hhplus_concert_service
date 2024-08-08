@@ -12,6 +12,7 @@ import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
 import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,6 +86,7 @@ public class  ConcertServiceImpl implements ConcertService {
         return newConcertItemList;
     }
 
+    @Transactional
     @Override
     public void concertInsert(String status, String title) {
 
@@ -103,6 +105,7 @@ public class  ConcertServiceImpl implements ConcertService {
         }
     }
 
+    @Transactional
     @Override
     public void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate) {
 //        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
@@ -123,6 +126,7 @@ public class  ConcertServiceImpl implements ConcertService {
         }
     }
 
+    @Transactional
     @Override
     public void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status) {
 
