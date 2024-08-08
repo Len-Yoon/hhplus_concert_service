@@ -61,33 +61,51 @@ public class ConcertCacheTest {
     @DisplayName("대량 데이터 입력")
     void SetUpData() {
 
-        for(int i = 0; i < 1000; i++) {
-            Concert concert = new Concert();
-            concert.setStatus("Y");
-            concert.setTitle("TEST"+i);
-            concert.setCreatedAt(LocalDateTime.now());
+        for (int i = 0; i < 100000; i++) {
+//            if(i < 500000) {
+//                Concert concert = new Concert();
+//                concert.setStatus("N");
+//                concert.setTitle("TEST"+i);
+//                concert.setCreatedAt(LocalDateTime.now());
+//
+//                concertRepository.save(concert);
+//            } else {
+//                Concert concert = new Concert();
+//                concert.setStatus("Y");
+//                concert.setTitle("TEST"+i);
+//                concert.setCreatedAt(LocalDateTime.now());
+//
+//                concertRepository.save(concert);
+//            }
 
-            concertRepository.save(concert);
-
-            for(int j = 0; j < 5; j++) {
+            for (int j = 0; j < 50; j++) {
                 ConcertItem concertItem = new ConcertItem();
-                concertItem.setConcertId(i+1);
-                concertItem.setConcertDate(LocalDate.now().plusDays(1));
+            concertItem.setConcertId(i+1);
+            concertItem.setConcertDate(LocalDate.now().plusDays(j));
 
-                concertItemRepository.save(concertItem);
-
-                for(int k = 0; k < 50; k++) {
-                    ConcertSeat concertSeat = new ConcertSeat();
-
-                    concertSeat.setItemId(j+1);
-                    concertSeat.setStatus("Y");
-                    concertSeat.setSeatPrice(20000);
-                    concertSeat.setSeatNum(k);
-
-                    concertSeatRepository.save(concertSeat);
-                }
+            concertItemRepository.save(concertItem);
             }
         }
+
+
+//        for(int j = 0; j < 5; j++) {
+//            ConcertItem concertItem = new ConcertItem();
+//            concertItem.setConcertId(i+1);
+//            concertItem.setConcertDate(LocalDate.now().plusDays(1));
+//
+//            concertItemRepository.save(concertItem);
+//
+//            for(int k = 0; k < 50; k++) {
+//                ConcertSeat concertSeat = new ConcertSeat();
+//
+//                concertSeat.setItemId(j+1);
+//                concertSeat.setStatus("Y");
+//                concertSeat.setSeatPrice(20000);
+//                concertSeat.setSeatNum(k);
+//
+//                concertSeatRepository.save(concertSeat);
+//            }
+//        }
     }
 
     @Test

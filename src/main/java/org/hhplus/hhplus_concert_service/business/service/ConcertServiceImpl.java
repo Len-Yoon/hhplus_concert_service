@@ -1,12 +1,16 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertInsertEvent;
+import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertItemInsertEvent;
+import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertSeatInsertEvent;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.ConcertItem;
 import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.persistence.ConcertItemRepository;
 import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
 import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +28,7 @@ public class  ConcertServiceImpl implements ConcertService {
     private final ConcertRepository concertRepository;
     private final ConcertItemRepository concertItemRepository;
     private final ConcertSeatRepository concertSeatRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<Concert> checkConcert() {
@@ -83,43 +88,61 @@ public class  ConcertServiceImpl implements ConcertService {
     @Override
     public void concertInsert(String status, String title) {
 
-        Concert concert = new Concert();
-        concert.setStatus(status);
-        concert.setTitle(title);
-        concert.setCreatedAt(LocalDateTime.now());
+//        Concert concert = new Concert();
+//        concert.setStatus(status);
+//        concert.setTitle(title);
+//        concert.setCreatedAt(LocalDateTime.now());
+//
+//
+//        concertRepository.save(concert);
 
-
-        concertRepository.save(concert);
+        try {
+            eventPublisher.publishEvent(new ConcertInsertEvent(this, status, title));
+        } catch (RuntimeException e) {
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate) {
-        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
+//        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
+//
+//        for(int i = 0; i < concertSize; i++) {
+//            ConcertItem concertItem = new ConcertItem();
+//
+//            concertItem.setConcertDate(startDate.plusDays(i));
+//            concertItem.setConcertId(concertId);
+//
+//            concertItemRepository.save(concertItem);
+//        }
 
-        for(int i = 0; i < concertSize; i++) {
-            ConcertItem concertItem = new ConcertItem();
-
-            concertItem.setConcertDate(startDate.plusDays(i));
-            concertItem.setConcertId(concertId);
-
-            concertItemRepository.save(concertItem);
+        try {
+            eventPublisher.publishEvent(new ConcertItemInsertEvent(this, concertId, startDate, endDate));
+        } catch (RuntimeException e) {
+            throw new RuntimeException();
         }
     }
 
     @Override
     public void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status) {
 
-        String[] seatPriceList = seatPrice.split(",");
+//        String[] seatPriceList = seatPrice.split(",");
+//
+//        for(int i = 0; i < seatSize; i++) {
+//            ConcertSeat concertSeat = new ConcertSeat();
+//
+//            concertSeat.setSeatNum(i+1);
+//            concertSeat.setSeatPrice(Integer.parseInt(seatPriceList[i]));
+//            concertSeat.setStatus(status);
+//            concertSeat.setItemId(itemId);
+//
+//            concertSeatRepository.save(concertSeat);
+//        }
 
-        for(int i = 0; i < seatSize; i++) {
-            ConcertSeat concertSeat = new ConcertSeat();
-
-            concertSeat.setSeatNum(i+1);
-            concertSeat.setSeatPrice(Integer.parseInt(seatPriceList[i]));
-            concertSeat.setStatus(status);
-            concertSeat.setItemId(itemId);
-
-            concertSeatRepository.save(concertSeat);
+        try {
+            eventPublisher.publishEvent(new ConcertSeatInsertEvent(this, itemId, seatSize, seatPrice, status));
+        } catch (RuntimeException e) {
+            throw new RuntimeException();
         }
     }
 
