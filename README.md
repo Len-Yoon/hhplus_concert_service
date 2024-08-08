@@ -151,9 +151,24 @@
   ### Kafka 트랙잭션 개념 정리
   https://velog.io/@mabest123/Kafka%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B6%84%EC%82%B0-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%B4%EB%9E%80 <br><br><br>
 
-  
-  
+  ### Kafka를 이용한 트랜잭션 분리 시나리오
+
+  #### 1. 콘서트 생성
+  <img width="699" alt="스크린샷 2024-08-09 오전 1 09 37" src="https://github.com/user-attachments/assets/1d223abd-e505-4a24-9e87-c1859dc3be4e"> <br>
+  콘서트와 옵션 그리고 좌석까지 생성하는 것을 하나의 트랜잭션으로 생각하였습니다.
+
+  하지만 콘서트와 옵션이 1:N의 관계고 옵션과 좌석 역시 1:N 관계이기에 이 트랜잭션을 유지한다면 DB의 부하가 크다고 생각하였습니다. <br>
+  그리고 트랜잭션의 실패할 경우 긴 생명주기의 트랜잭션이 롤백하는것이 비효율적이라 생각하였기에 각각의 트랙잭션을 나누어 보았습니다. <br><br><br>
+
+  #### 2. 콘서트 예약
+<img width="852" alt="스크린샷 2024-08-09 오전 1 39 43" src="https://github.com/user-attachments/assets/1d308a9d-ed54-4660-90dc-e07d80fcde43"> <br>
+ 예약의 경우 예약-결제-포인트-결제완료-대기열까지 기존의 로직은 긴 생명주기의 트랜잭션을 가지고 있었습니다. <br>
+ 이 트랜잭션 역시 DB의 부하가 크다 생각하였고, 트랜잭션의 범위내에서 Lock을 사용하고 있기에 데드락의 상황을 유발할 수 있다고 생각하였습니다. <br>
+ 그래서 Lock을 이용하는 범위에 따라 트랜잭션을 나누는것이 적합하다 판단하였습니다.
+
 </details>
+
+<br>
 
 <details>
   <summary>EventListener + EventPublisher를 이용한 관심사 분리</summary>
