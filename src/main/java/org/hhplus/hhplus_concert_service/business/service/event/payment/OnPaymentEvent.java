@@ -4,19 +4,19 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
-public class PaymentEvent extends ApplicationEvent {
-    private final int paymentAmount;
+public class OnPaymentEvent extends ApplicationEvent {
+    private final int totalPrice;
     private final int reservationId;
 
 
-    public PaymentEvent(Object source, int paymentAmount, int reservationId) {
+    public OnPaymentEvent(Object source, int totalPrice, int reservationId) {
         super(source);
-        this.paymentAmount = paymentAmount;
+        this.totalPrice = totalPrice;
         this.reservationId = reservationId;
     }
 
-    public int getPaymentAmount() {
-        return paymentAmount;
+    public int getTotalPrice() {
+        return totalPrice;
     }
 
     public int getReservationId() {

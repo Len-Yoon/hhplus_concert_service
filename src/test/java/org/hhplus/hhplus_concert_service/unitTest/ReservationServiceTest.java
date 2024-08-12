@@ -90,6 +90,8 @@ class ReservationServiceTest {
     @Test
     @DisplayName("예약 완료")
     void reservationCompleted() {
+        String userId = "test1";
+        int concertId = 1;
         int reservationId = 1;
         int paymentId = 1;
 
@@ -97,7 +99,7 @@ class ReservationServiceTest {
         reservation.setStatus("T");
         when(reservationRepository.findByReservationId(reservationId)).thenReturn(reservation);
 
-        reservationService.reservationCompleted(reservationId, paymentId);
+        reservationService.reservationCompleted(userId, concertId ,reservationId, paymentId);
 
         verify(reservationRepository, times(1)).save(reservation);
         assertEquals("예약완료", reservation.getStatus());

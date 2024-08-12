@@ -11,6 +11,8 @@ public class PointDTO {
     private int totalPoint;
     @NotNull(message = "concertId must not be null")
     private int concertId;
+    @NotNull(message = "reservationId must not be null")
+    private int reservationId;
 
     public @NotNull(message = "userId must not be null") String getUserId() {
         return userId;
@@ -45,5 +47,14 @@ public class PointDTO {
 
     public void setConcertId(@NotNull(message = "concertId must not be null") int concertId) {
         this.concertId = concertId;
+    }
+
+    @NotNull(message = "reservationId must not be null")
+    public int getReservationId() {
+        return reservationId;
+    }
+
+    public void setReservationId(@NotNull(message = "reservationId must not be null") int reservationId) {
+        this.reservationId = reservationId;
     }
 }

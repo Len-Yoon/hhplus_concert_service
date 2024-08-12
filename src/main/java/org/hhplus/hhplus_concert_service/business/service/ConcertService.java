@@ -28,12 +28,15 @@ public interface ConcertService {
 
     //콘서트 입력
     @CacheEvict(value = "concert_status_cache", allEntries = true)
-    void concertInsert(String status, String title);
+    void concertInsert(String status,String title,LocalDate startDate,LocalDate endDate,int seatSize,String seatPrice);
 
-    //콘서트 Item 입력
-    @CacheEvict(value = "concert_date_cache", allEntries = true)
-    void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate);
+//    //콘서트 Item 입력
+//    @CacheEvict(value = "concert_date_cache", allEntries = true)
+//    void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate);
+//
+//    //콘서트 Seat 입력
+//    void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status);
 
-    //콘서트 Seat 입력
-    void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status);
+    //콘서트 상태변경
+    void concertStatusChange(int seatId);
 }

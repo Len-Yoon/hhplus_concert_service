@@ -1,9 +1,6 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertInsertEvent;
-import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertItemInsertEvent;
-import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertSeatInsertEvent;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.ConcertItem;
 import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
@@ -88,65 +85,63 @@ public class  ConcertServiceImpl implements ConcertService {
 
     @Transactional
     @Override
-    public void concertInsert(String status, String title) {
+    public void concertInsert(String status,String title,LocalDate startDate,LocalDate endDate,int seatSize,String seatPrice) {
 
-//        Concert concert = new Concert();
-//        concert.setStatus(status);
-//        concert.setTitle(title);
-//        concert.setCreatedAt(LocalDateTime.now());
-//
-//
-//        concertRepository.save(concert);
+        Concert concert = new Concert();
+        concert.setStatus(status);
+        concert.setTitle(title);
+        concert.setCreatedAt(LocalDateTime.now());
 
-        try {
-            eventPublisher.publishEvent(new ConcertInsertEvent(this, status, title));
-        } catch (RuntimeException e) {
-            throw new RuntimeException();
+        Concert concert1 = concertRepository.save(concert);
+        int concertId = concert1.getConcertId();
+
+        if(concertId != 0) {
+            concertItemInsert(concertId, startDate, endDate, seatSize, seatPrice);
         }
     }
 
-    @Transactional
     @Override
-    public void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate) {
-//        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
-//
-//        for(int i = 0; i < concertSize; i++) {
-//            ConcertItem concertItem = new ConcertItem();
-//
-//            concertItem.setConcertDate(startDate.plusDays(i));
-//            concertItem.setConcertId(concertId);
-//
-//            concertItemRepository.save(concertItem);
-//        }
+    public void concertStatusChange(int seatId) {
+        ConcertSeat concertSeat = concertSeatRepository.findBySeatId(seatId);
 
-        try {
-            eventPublisher.publishEvent(new ConcertItemInsertEvent(this, concertId, startDate, endDate));
-        } catch (RuntimeException e) {
-            throw new RuntimeException();
-        }
+        ConcertSeat concertSeat1 = new ConcertSeat();
+
+        concertSeat1.setStatus("Y");
+
+        concertSeatRepository.save(concertSeat1);
     }
 
-    @Transactional
-    @Override
-    public void concertSeatInsert(int itemId, int seatSize, String seatPrice, String status) {
+    public void concertItemInsert(int concertId, LocalDate startDate, LocalDate endDate, int seatSize,String seatPrice) {
+        int concertSize = (int) startDate.until(endDate, ChronoUnit.CENTURIES);
 
-//        String[] seatPriceList = seatPrice.split(",");
-//
-//        for(int i = 0; i < seatSize; i++) {
-//            ConcertSeat concertSeat = new ConcertSeat();
-//
-//            concertSeat.setSeatNum(i+1);
-//            concertSeat.setSeatPrice(Integer.parseInt(seatPriceList[i]));
-//            concertSeat.setStatus(status);
-//            concertSeat.setItemId(itemId);
-//
-//            concertSeatRepository.save(concertSeat);
-//        }
+        for(int i = 0; i < concertSize; i++) {
+            ConcertItem concertItem = new ConcertItem();
 
-        try {
-            eventPublisher.publishEvent(new ConcertSeatInsertEvent(this, itemId, seatSize, seatPrice, status));
-        } catch (RuntimeException e) {
-            throw new RuntimeException();
+            concertItem.setConcertDate(startDate.plusDays(i));
+            concertItem.setConcertId(concertId);
+
+            ConcertItem concertItem1 = concertItemRepository.save(concertItem);
+            int itemId = concertItem1.getItemId();
+
+            concertSeatInsert(itemId, seatSize, seatPrice);
+        }
+
+
+    }
+
+    public void concertSeatInsert(int itemId, int seatSize, String seatPrice) {
+
+        String[] seatPriceList = seatPrice.split(",");
+
+        for(int i = 0; i < seatSize; i++) {
+            ConcertSeat concertSeat = new ConcertSeat();
+
+            concertSeat.setSeatNum(i+1);
+            concertSeat.setSeatPrice(Integer.parseInt(seatPriceList[i]));
+            concertSeat.setStatus("N");
+            concertSeat.setItemId(itemId);
+
+            concertSeatRepository.save(concertSeat);
         }
     }
 

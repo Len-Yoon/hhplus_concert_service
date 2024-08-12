@@ -94,6 +94,11 @@ public class TokenQueueServiceImpl implements TokenQueueService {
         }
     }
 
+    @Override
+    public void deleteByUserIdAndConcertId(String userId, int concertId) {
+        tokenQueueRepository.deleteByUserIdAndConcertId(userId, concertId);
+    }
+
     private String getQueueKey(String concertId) {
         return "token_queue_" + concertId;
     }

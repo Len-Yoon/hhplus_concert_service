@@ -1,10 +1,8 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.hhplus_concert_service.business.service.event.point.PointMinusEvent;
-import org.hhplus.hhplus_concert_service.business.service.event.point.PointPlusEvent;
+import org.hhplus.hhplus_concert_service.business.service.event.payment.OnPaymentEvent;
 import org.hhplus.hhplus_concert_service.domain.Point;
-import org.hhplus.hhplus_concert_service.domain.TokenQueue;
 import org.hhplus.hhplus_concert_service.persistence.PointRepository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.slf4j.Logger;
@@ -36,14 +34,13 @@ public class PointServiceImpl implements PointService {
         Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
 
         try {
-//            Point newPoint = new Point();
-//
-//            newPoint.setUserId(userId);
-//            newPoint.setPoint(point.getPoint() + chargePoint);
-//
-//            pointRepository.save(newPoint);
+            Point newPoint = new Point();
 
-            eventPublisher.publishEvent(new PointPlusEvent(this, userId, chargePoint));
+            newPoint.setUserId(userId);
+            newPoint.setPoint(point.getPoint() + chargePoint);
+
+            pointRepository.save(newPoint);
+
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new RuntimeException();
         }
@@ -52,32 +49,18 @@ public class PointServiceImpl implements PointService {
     //낙관적 락 적용
     @Transactional
     @Override
-    public void minusPoint(String userId, int totalPrice, int concertId) {
+    public void minusPoint(String userId, int totalPrice, int concertId, int reservationId) {
 
         Point point = pointRepository.findFirstByUserIdOrderByPointIdDesc(userId);
-        TokenQueue tokenQueue = tokenQueueRepository.findByUserIdAndConcertId(userId, concertId);
-
-        int holdPoint = point.getPoint();
-        String token = tokenQueue.getToken();
 
         try {
-            if(token.isEmpty()) {
-                throw new RuntimeException();
-            } else {
-                if(holdPoint < totalPrice) {
-                    throw  new RuntimeException();
-                } else {
-//                    Point newPoint = new Point();
-//                    newPoint.setUserId(userId);
-//                    newPoint.setPoint(point.getPoint() - totalPrice);
+            Point newPoint = new Point();
+            newPoint.setUserId(userId);
+            newPoint.setPoint(point.getPoint() - totalPrice);
 
-//                    pointRepository.save(newPoint);
-//                    tokenQueueRepository.deleteByUserIdAndConcertId(userId, concertId);
+            pointRepository.save(newPoint);
 
-                    //이벤트 발행
-                    eventPublisher.publishEvent(new PointMinusEvent(this, userId, totalPrice, concertId));
-                }
-            }
+            eventPublisher.publishEvent(new OnPaymentEvent(this, totalPrice, reservationId));
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new RuntimeException();
         }

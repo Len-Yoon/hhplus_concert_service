@@ -32,13 +32,13 @@ public class ReservationController {
     }
 
     //예약 완료
-    @PostMapping("reservationCompleted")
-    public void reservationCompleted(@Valid @ModelAttribute ReservationDTO reservationDTO) {
-        int reservationId = reservationDTO.getReservationId();
-        int paymentId = reservationDTO.getPaymentId();
-
-        reservationService.reservationCompleted(reservationId, paymentId);
-    }
+//    @PostMapping("reservationCompleted")
+//    public void reservationCompleted(@Valid @ModelAttribute ReservationDTO reservationDTO) {
+//        int reservationId = reservationDTO.getReservationId();
+//        int paymentId = reservationDTO.getPaymentId();
+//
+//        reservationService.reservationCompleted(reservationId, paymentId);
+//    }
 
     //예약 내역 체크
     @GetMapping("checkReservation")

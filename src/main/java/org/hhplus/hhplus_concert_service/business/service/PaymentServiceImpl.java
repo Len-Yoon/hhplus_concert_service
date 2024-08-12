@@ -1,9 +1,6 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hhplus.hhplus_concert_service.business.service.event.concert.ConcertInsertEvent;
-import org.hhplus.hhplus_concert_service.business.service.event.payment.PaymentEvent;
-import org.hhplus.hhplus_concert_service.business.service.listener.payment.PaymentListener;
 import org.hhplus.hhplus_concert_service.domain.Payment;
 import org.hhplus.hhplus_concert_service.persistence.PaymentRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,7 +18,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void payment(int paymentAmount, int reservationId) {
         try {
-            eventPublisher.publishEvent(new PaymentEvent(this, paymentAmount, reservationId));
+            Payment payment = new Payment();
+
+            payment.setReservationId(reservationId);
+            payment.setPaymentAmount(paymentAmount);
+
+            paymentRepository.save(payment);
         } catch (RuntimeException e) {
             throw new RuntimeException();
         }

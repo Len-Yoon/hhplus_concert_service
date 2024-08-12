@@ -59,29 +59,33 @@ public class ConcertController {
     public void concertInsert(@Valid @ModelAttribute ConcertDTO concertDTO) {
         String status = concertDTO.getStatus();
         String title = concertDTO.getTitle();
+        LocalDate startDate = concertDTO.getStartDate();
+        LocalDate endDate = concertDTO.getEndDate();
+        int seatSize = concertDTO.getSeatSize();
+        String seatPrice = concertDTO.getSeatPrice();
 
-        concertService.concertInsert(status, title);
+        concertService.concertInsert(status, title, startDate, endDate, seatSize, seatPrice);
     }
 
     //콘서트 Item 생성
-    @PostMapping("concertItemInsert")
-    public void concertItemInsert(@Valid @ModelAttribute ConcertDTO concertDTO) {
-        int concertId = concertDTO.getConcertId();
-        LocalDate startDate = concertDTO.getStartDate();
-        LocalDate endDate = concertDTO.getEndDate();
-
-        concertService.concertItemInsert(concertId, startDate, endDate);
-    }
+//    @PostMapping("concertItemInsert")
+//    public void concertItemInsert(@Valid @ModelAttribute ConcertDTO concertDTO) {
+//        int concertId = concertDTO.getConcertId();
+//        LocalDate startDate = concertDTO.getStartDate();
+//        LocalDate endDate = concertDTO.getEndDate();
+//
+//        concertService.concertItemInsert(concertId, startDate, endDate);
+//    }
 
     //콘서트 자리 생성
-    @PostMapping("concertSeatInsert")
-    public void concertSeatInsert(@Valid @ModelAttribute ConcertDTO concertDTO) {
-        int itemId = concertDTO.getItemId();
-        int seatSize = concertDTO.getSeatSize();
-        String seatPrice = concertDTO.getSeatPrice();
-        String status = concertDTO.getStatus();
-
-        concertService.concertSeatInsert(itemId, seatSize, seatPrice, status);
-    }
+//    @PostMapping("concertSeatInsert")
+//    public void concertSeatInsert(@Valid @ModelAttribute ConcertDTO concertDTO) {
+//        int itemId = concertDTO.getItemId();
+//        int seatSize = concertDTO.getSeatSize();
+//        String seatPrice = concertDTO.getSeatPrice();
+//        String status = concertDTO.getStatus();
+//
+//        concertService.concertSeatInsert(itemId, seatSize, seatPrice, status);
+//    }
 
 }

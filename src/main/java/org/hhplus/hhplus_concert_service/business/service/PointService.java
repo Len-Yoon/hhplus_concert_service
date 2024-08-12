@@ -16,5 +16,5 @@ public interface PointService {
 
     //포인트 차감
     @CacheEvict(value = "check_point_cache", allEntries = true)
-    void minusPoint(String userId, int totalPrice, int concertId);
+    void minusPoint(String userId, int totalPrice, int concertId, int reservationId);
 }

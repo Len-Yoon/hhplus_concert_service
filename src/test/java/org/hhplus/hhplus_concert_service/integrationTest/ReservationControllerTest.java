@@ -55,7 +55,7 @@ class ReservationControllerTest {
 
     @Test
     void reservationCompleted() throws Exception {
-        doNothing().when(reservationService).reservationCompleted(any(Integer.class), any(Integer.class));
+//        doNothing().when(reservationService).reservationCompleted(any(Integer.class), any(Integer.class));
 
         mockMvc.perform(post("/reservation/reservationCompleted")
                         .param("reservationId", "1")

@@ -2,6 +2,7 @@ package org.hhplus.hhplus_concert_service.interfaces.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hhplus.hhplus_concert_service.business.service.facade.PaymentPointFacade;
 import org.hhplus.hhplus_concert_service.domain.Point;
 import org.hhplus.hhplus_concert_service.business.service.PointService;
 import org.hhplus.hhplus_concert_service.interfaces.controller.dto.PointDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class PointController {
 
     private final PointService pointService;
+    private final PaymentPointFacade pointPaymentFacade;
 
     //포인트 조회
     @GetMapping("")
@@ -38,8 +40,9 @@ public class PointController {
        String userId = pointDTO.getUserId();
        int totalPrice = pointDTO.getTotalPoint();
        int concertId = pointDTO.getConcertId();
+       int reservationId = pointDTO.getReservationId();
 
-       pointService.minusPoint(userId, totalPrice, concertId);
+        pointPaymentFacade.processPointPayment(userId, totalPrice, concertId, reservationId);
     }
 
 }

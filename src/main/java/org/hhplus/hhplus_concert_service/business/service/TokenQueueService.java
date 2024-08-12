@@ -7,18 +7,6 @@ import java.util.Optional;
 
 public interface TokenQueueService {
 
-//    void generateTokenForUser(String userId);
-//
-//    void issueTokens();
-//
-//    List<TokenQueue> getAllTokens();
-//
-//    TokenQueue getToken(String userId);
-//
-//    void deleteToken(int queueId);
-//
-//    boolean isTokenValid(String token);
-
     void addTokenQueue (String userId, int concertId);
 
     void activateTokens(int concertId);
@@ -30,4 +18,6 @@ public interface TokenQueueService {
     TokenQueue getToken(int concertId, String userId);
 
     void deleteToken(int concertId, String token);
+
+    void deleteByUserIdAndConcertId(String userId, int concertId);
 }

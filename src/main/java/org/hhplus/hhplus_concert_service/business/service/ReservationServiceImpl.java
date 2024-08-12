@@ -5,12 +5,15 @@ import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.hhplus.hhplus_concert_service.business.constans.ReservationConstants;
+import org.hhplus.hhplus_concert_service.business.service.event.concert.OnChangeConcertSeatStatusEvent;
 import org.hhplus.hhplus_concert_service.domain.Concert;
 import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.hhplus.hhplus_concert_service.persistence.ConcertRepository;
 import org.hhplus.hhplus_concert_service.persistence.ConcertSeatRepository;
 import org.hhplus.hhplus_concert_service.persistence.ReservationRepository;
+import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +28,10 @@ public class ReservationServiceImpl implements ReservationService {
     private final ConcertRepository concertRepository;
     private final ConcertSeatRepository concertSeatRepository;
     private final ReservationRepository reservationRepository;
+    private final TokenQueueRepository tokenQueueRepository;
 
     private final EntityManager entityManager;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -36,8 +41,16 @@ public class ReservationServiceImpl implements ReservationService {
 
         while (retryCount > 0) {
             Concert concert = concertRepository.findByConcertId(concertId);
-            //낙관적 락을 사용
-            ConcertSeat concertSeat = concertSeatRepository.findBySeatId(seatId);
+
+            //비관적락 사용 위한 select문
+            ConcertSeat concertSeat = concertSeatRepository.lockSeatById(seatId);
+
+            if (concertSeat == null) {
+                throw new NoSuchElementException();
+            }
+            if (!ReservationConstants.SEAT_AVAILABLE.equals(concertSeat.getStatus())) {
+                throw new IllegalStateException();
+            }
 
             try {
                 if (concert == null) {
@@ -46,16 +59,6 @@ public class ReservationServiceImpl implements ReservationService {
                 if (!ReservationConstants.CONCERT_AVAILABLE.equals(concert.getStatus())) {
                     throw new IllegalStateException();
                 }
-
-                if (concertSeat == null) {
-                    throw new NoSuchElementException();
-                }
-                if (!ReservationConstants.SEAT_AVAILABLE.equals(concertSeat.getStatus())) {
-                    throw new IllegalStateException();
-                }
-
-                //비관적락 사용 위한 select문
-                concertSeatRepository.lockSeatById(seatId);
 
                 Reservation reservation = new Reservation();
 
@@ -68,11 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
 
                 reservationRepository.save(reservation);
 
-                concertSeat.setStatus("N");
-
-                concertSeatRepository.save(concertSeat);
-                break;
-
+                eventPublisher.publishEvent(new OnChangeConcertSeatStatusEvent(this, seatId));
 
             } catch (ObjectOptimisticLockingFailureException e) {
                 //낙관적 락 캐쉬 초기화
@@ -87,14 +86,15 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
-    @Override
-    public void reservationCompleted(int reservationId, int paymentId) {
+    public void reservationCompleted(String userId, int concertId, int reservationId, int paymentId) {
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
 
         reservation.setStatus("Y");
         reservation.setPaymentId(paymentId);
 
         reservationRepository.save(reservation);
+
+        eventPublisher.publishEvent(new OnChangeConcertSeatStatusEvent(this, concertId));
     }
 
     @Override

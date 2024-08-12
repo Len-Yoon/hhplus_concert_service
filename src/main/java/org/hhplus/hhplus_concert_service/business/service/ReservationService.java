@@ -10,7 +10,7 @@ public interface ReservationService {
     void reservation(String userId, int concertId, int itemId, int seatId, int totalPrice, String status);
 
     //예약 완료
-    void reservationCompleted(int reservationId, int paymentId);
+    void reservationCompleted(String userId, int concertId, int reservationId, int paymentId);
 
     //특정 유저 예약 내역 조회
     List<Reservation> checkReservations(String userId);
