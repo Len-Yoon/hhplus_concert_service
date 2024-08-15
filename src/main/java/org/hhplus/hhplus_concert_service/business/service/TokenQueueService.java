@@ -19,5 +19,4 @@ public interface TokenQueueService {
 
     void deleteToken(int concertId, String token);
 
-    void deleteByUserIdAndConcertId(String userId, int concertId);
 }

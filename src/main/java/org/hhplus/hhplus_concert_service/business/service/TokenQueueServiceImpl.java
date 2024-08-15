@@ -1,7 +1,9 @@
 package org.hhplus.hhplus_concert_service.business.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hhplus.hhplus_concert_service.domain.OutboxEvent;
 import org.hhplus.hhplus_concert_service.domain.TokenQueue;
+import org.hhplus.hhplus_concert_service.persistence.OutBoxEventRepository;
 import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,6 +24,9 @@ public class TokenQueueServiceImpl implements TokenQueueService {
 
     @Autowired
     private TokenQueueRepository tokenQueueRepository;
+
+    @Autowired
+    private OutBoxEventRepository outBoxEventRepository;
 
     @Override
     public void addTokenQueue(String userId, int concertId) {
@@ -90,13 +95,15 @@ public class TokenQueueServiceImpl implements TokenQueueService {
                     .findFirst()
                     .ifPresent(t -> redisTemplate.opsForZSet().remove(getQueueKey(String.valueOf(concertId)), t));
 
+            //토큰 삭제
             tokenQueueRepository.deleteByToken(token);
-        }
-    }
 
-    @Override
-    public void deleteByUserIdAndConcertId(String userId, int concertId) {
-        tokenQueueRepository.deleteByUserIdAndConcertId(userId, concertId);
+            // Kafka에 발행할 메시지를 아웃박스 테이블에 저장
+            String eventType = "DELETE_TOKEN";
+            String payload = String.format("{\"concertId\": %d, \"token\": \"%s\"}", concertId, token);
+            OutboxEvent outboxEvent = new OutboxEvent(eventType, payload);
+            outBoxEventRepository.save(outboxEvent);
+        }
     }
 
     private String getQueueKey(String concertId) {
