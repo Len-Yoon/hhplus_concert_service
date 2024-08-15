@@ -26,7 +26,6 @@ public class  ConcertServiceImpl implements ConcertService {
     private final ConcertRepository concertRepository;
     private final ConcertItemRepository concertItemRepository;
     private final ConcertSeatRepository concertSeatRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<Concert> checkConcert() {
