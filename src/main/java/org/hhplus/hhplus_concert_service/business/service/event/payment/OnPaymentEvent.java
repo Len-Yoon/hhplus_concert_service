@@ -5,21 +5,21 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 public class OnPaymentEvent extends ApplicationEvent {
-    private final int totalPrice;
-    private final int reservationId;
+    private int reservationId;
+    private int paymentAmount;
 
 
-    public OnPaymentEvent(Object source, int totalPrice, int reservationId) {
+    public OnPaymentEvent(Object source, int reservationId, int paymentAmount) {
         super(source);
-        this.totalPrice = totalPrice;
         this.reservationId = reservationId;
-    }
-
-    public int getTotalPrice() {
-        return totalPrice;
+        this.paymentAmount = paymentAmount;
     }
 
     public int getReservationId() {
         return reservationId;
+    }
+
+    public int getPaymentAmount() {
+        return paymentAmount;
     }
 }
