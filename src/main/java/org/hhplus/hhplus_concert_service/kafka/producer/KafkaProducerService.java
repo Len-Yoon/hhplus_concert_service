@@ -27,4 +27,19 @@ public class KafkaProducerService {
         kafkaTemplate.send(RESERVATION_TOPIC, reservationMessage);
         log.info("Sent message to " + RESERVATION_TOPIC + ": " + reservationMessage);
     }
+
+    public void sendRPaymentMessage(String topic, String PaymentMessage) {
+        kafkaTemplate.send(PAYMENT_TOPIC, PaymentMessage);
+        log.info("Sent message to " + PAYMENT_TOPIC + ": " + PaymentMessage);
+    }
+
+    public void sendRDeleteTokenMessage(String topic, String DeleteTokenMessage) {
+        kafkaTemplate.send(DELETETOKEN_TOPIC, DeleteTokenMessage);
+        log.info("Sent message to " + DELETETOKEN_TOPIC + ": " + DeleteTokenMessage);
+    }
+
+    public void sendRSeatStatusChangeMessage(String topic, String changeSeatMessage) {
+        kafkaTemplate.send(CONCERT_TOPIC, changeSeatMessage);
+        log.info("Sent message to " + CONCERT_TOPIC + ": " + changeSeatMessage);
+    }
 }
