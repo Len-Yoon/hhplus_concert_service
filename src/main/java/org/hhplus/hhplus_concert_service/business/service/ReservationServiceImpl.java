@@ -15,7 +15,9 @@ import org.hhplus.hhplus_concert_service.domain.ConcertSeat;
 import org.hhplus.hhplus_concert_service.domain.OutboxEvent;
 import org.hhplus.hhplus_concert_service.domain.Reservation;
 import org.hhplus.hhplus_concert_service.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,12 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final EntityManager entityManager;
     private final ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    private static final String CHANGE_SEAT_STATUS_TOPIC = "changeSeatStatus-topic";
+    private static final String DELETETOKEN_TOPIC = "deleteToken-topic";
 
     @Override
     @Transactional
@@ -82,6 +90,10 @@ public class ReservationServiceImpl implements ReservationService {
                 String payload = String.format("{\"seatId\": %d}", seatId);
                 OutboxEvent outboxEvent = new OutboxEvent(eventType, payload);
                 outboxEventRepository.save(outboxEvent);
+
+                // Kafka로 이벤트 발행
+                kafkaTemplate.send(CHANGE_SEAT_STATUS_TOPIC, payload);
+
                 eventPublisher.publishEvent(new OnChangeSeatStatusEvent(this, seatId));
 
             } catch (ObjectOptimisticLockingFailureException e) {
@@ -116,6 +128,9 @@ public class ReservationServiceImpl implements ReservationService {
 
             OutboxEvent outboxEvent = new OutboxEvent(eventType, payload);
             outboxEventRepository.save(outboxEvent);
+
+            // Kafka로 이벤트 발행
+            kafkaTemplate.send(DELETETOKEN_TOPIC, payload);
 
             eventPublisher.publishEvent(new OnDeleteTokenEvent(this,userId,concertId));
 

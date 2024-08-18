@@ -1,4 +1,4 @@
-package org.hhplus.hhplus_concert_service.business.service.listener.reservation;
+package org.hhplus.hhplus_concert_service.business.service.listener.payment;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hhplus.hhplus_concert_service.domain.OutboxEvent;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class OutBoxResrevationCompletedPublisher {
+public class OutBoxPaymentPublisher {
 
     @Autowired
     private OutBoxEventRepository outboxEventRepository;
@@ -21,7 +21,7 @@ public class OutBoxResrevationCompletedPublisher {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private static final String RESERVATION_TOPIC = "reservation-topic";
+    private static final String PAYMENT_TOPIC = "payment-topic";
     private static final int MAX_RETRIES = 3;
 
     @Scheduled(fixedRate = 5000) // 5초마다 실행
@@ -40,7 +40,7 @@ public class OutBoxResrevationCompletedPublisher {
 
                 while (!sent && attempt < MAX_RETRIES) {
                     try {
-                        kafkaTemplate.send(RESERVATION_TOPIC, event.getPayload()).get();
+                        kafkaTemplate.send(PAYMENT_TOPIC, event.getPayload()).get();
 
                         // 메시지 전송이 성공하면 아웃박스 이벤트를 처리 완료로 표시
                         event.setProcessed(true);

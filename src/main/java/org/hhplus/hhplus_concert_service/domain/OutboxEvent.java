@@ -1,9 +1,6 @@
 package org.hhplus.hhplus_concert_service.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class OutboxEvent {
@@ -14,6 +11,9 @@ public class OutboxEvent {
 
     private String eventType;
     private String payload;
+
+    @Column(name = "in_progress")
+    private boolean inProgress;  // 중복 발행 방지용 필드
 
     public OutboxEvent() {}
 
@@ -55,4 +55,14 @@ public class OutboxEvent {
     public void setProcessed(boolean processed) {
         this.processed = processed;
     }
+
+    public boolean isInProgress() {
+        return inProgress;
+    }
+
+    public void setInProgress(boolean inProgress) {
+        this.inProgress = inProgress;
+    }
+
+
 }

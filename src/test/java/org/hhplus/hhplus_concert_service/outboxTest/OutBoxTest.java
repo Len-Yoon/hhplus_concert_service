@@ -34,6 +34,9 @@ public class OutBoxTest {
     @Autowired
     private ReservationService reservationService;  // 예약 서비스
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
 
     private BlockingQueue<ConsumerRecord<String, String>> records = new LinkedBlockingQueue<>();
 
@@ -63,6 +66,23 @@ public class OutBoxTest {
         OutboxEvent event = outboxEvents.get(0);
         assertThat(event.getEventType()).isEqualTo("CHANGE_SEAT_STATUS");
         assertThat(event.getPayload()).contains("\"seatId\":" + seatId);
+    }
+
+    @Test
+    @DisplayName("컨슈머 메시지 처리 테스트")
+    public void testConsumerReceivesMessage() throws InterruptedException {
+        // Given
+        String expectedMessage = "{\"seatId\":3,\"status\":\"T\"}";
+
+        // Send a message to the topic
+        kafkaTemplate.send("change-seat-status-topic", expectedMessage);
+
+        // When
+        ConsumerRecord<String, String> received = records.poll(10, TimeUnit.SECONDS);
+
+        // Then
+        assertThat(received).isNotNull();
+        assertThat(received.value()).isEqualTo(expectedMessage);
     }
 
 }

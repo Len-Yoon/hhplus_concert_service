@@ -8,6 +8,7 @@ import org.hhplus.hhplus_concert_service.persistence.TokenQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,9 +25,6 @@ public class TokenQueueServiceImpl implements TokenQueueService {
 
     @Autowired
     private TokenQueueRepository tokenQueueRepository;
-
-    @Autowired
-    private OutBoxEventRepository outBoxEventRepository;
 
     @Override
     public void addTokenQueue(String userId, int concertId) {
@@ -97,12 +95,6 @@ public class TokenQueueServiceImpl implements TokenQueueService {
 
             //토큰 삭제
             tokenQueueRepository.deleteByToken(token);
-
-            // Kafka에 발행할 메시지를 아웃박스 테이블에 저장
-            String eventType = "DELETE_TOKEN";
-            String payload = String.format("{\"concertId\": %d, \"token\": \"%s\"}", concertId, token);
-            OutboxEvent outboxEvent = new OutboxEvent(eventType, payload);
-            outBoxEventRepository.save(outboxEvent);
         }
     }
 

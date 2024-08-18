@@ -28,42 +28,51 @@ public class OutBoxDeleteTokenEventPublisher {
 
     @Scheduled(fixedRate = 5000) // 5초마다 실행
     public void publishOutboxEvents() {
-        List<OutboxEvent> events = outboxEventRepository.findAll();
+        List<OutboxEvent> events = outboxEventRepository.findByProcessedFalse();
 
         for (OutboxEvent event : events) {
-            if ("DELETE_TOKEN".equals(event.getEventType())) {
-                sendMessageWithRetry(event, DELETE_TOKEN_TOPIC, 0);
+            boolean sent = false;
+            int attempt = 0;
+
+            try {
+                // 이벤트를 처리 중으로 표시하여 중복 발행 방지
+                event.setInProgress(true);
+                outboxEventRepository.save(event);
+
+                while (!sent && attempt < MAX_RETRIES) {
+                    try {
+                        kafkaTemplate.send(DELETE_TOKEN_TOPIC, event.getPayload()).get();
+
+                        // 메시지 전송이 성공하면 아웃박스 이벤트를 처리 완료로 표시
+                        event.setProcessed(true);
+                        event.setInProgress(false); // 처리 중 상태 해제
+                        outboxEventRepository.save(event);
+                        outboxEventRepository.save(event);
+                        sent = true; // 전송 성공 시 sent 플래그를 true로 설정
+                    } catch (Exception e) {
+                        attempt++;
+                        log.error("Failed to send event to Kafka, attempt {}/{}: {}", attempt, MAX_RETRIES, event, e);
+
+                        if (attempt >= MAX_RETRIES) {
+                            log.error("Max retry attempts reached for event: {}", event);
+
+                        }
+
+                        try {
+                            // 재시도 전에 잠시 대기
+                            Thread.sleep(1000); // 1초 대기 (원하는 대기 시간으로 조절 가능)
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            log.error("Retry sleep interrupted", ie);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                log.error("Failed to process event: {}", event, e);
+                event.setInProgress(false); // 실패 시 처리 중 상태 해제
+                outboxEventRepository.save(event);
             }
         }
-    }
-
-    private void sendMessageWithRetry(OutboxEvent event, String topic, int attempt) {
-        ListenableFuture<SendResult<String, String>> future = (ListenableFuture<SendResult<String, String>>) kafkaTemplate.send(topic, event.getPayload());
-
-        future.addCallback(new ListenableFutureCallback<>() {
-            @Override
-            public void onSuccess(SendResult<String, String> result) {
-                // 메시지 전송이 성공하면 아웃박스에서 이벤트 삭제
-                outboxEventRepository.delete(event);
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                // 실패 시 재시도 또는 실패 처리
-                if (attempt < MAX_RETRIES) {
-                    sendMessageWithRetry(event, topic, attempt + 1);
-                } else {
-                    // 재시도 한계를 초과하면 로그를 남기고, 필요하면 장애 처리 로직 추가
-                    log.error("Failed to send message after {} attempts, event: {}", MAX_RETRIES, event, ex);
-                    handleFailedEvent(event);
-                }
-            }
-        });
-    }
-
-    private void handleFailedEvent(OutboxEvent event) {
-
-        log.error("Failed to process event: {}", event);
-        // 필요 시 추가적인 처리 로직 구현
     }
 }

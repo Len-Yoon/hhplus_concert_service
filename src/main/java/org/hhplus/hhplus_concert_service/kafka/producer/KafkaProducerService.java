@@ -10,10 +10,10 @@ public class KafkaProducerService {
 
     private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final String RESERVATION_TOPIC = "reservation_topic";
+    private final String RESERVATION_TOPIC = "reservation-topic";
     private final String PAYMENT_TOPIC = "payment-topic";
     private final String DELETETOKEN_TOPIC = "deleteToken-topic";
-    private final String CONCERT_TOPIC = "concert-topic";
+    private final String CHANGE_SEAT_STATUS_TOPIC = "changeSeatStatus-topic";
 
     public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -39,7 +39,7 @@ public class KafkaProducerService {
     }
 
     public void sendRSeatStatusChangeMessage(String topic, String changeSeatMessage) {
-        kafkaTemplate.send(CONCERT_TOPIC, changeSeatMessage);
-        log.info("Sent message to " + CONCERT_TOPIC + ": " + changeSeatMessage);
+        kafkaTemplate.send(CHANGE_SEAT_STATUS_TOPIC, changeSeatMessage);
+        log.info("Sent message to " + CHANGE_SEAT_STATUS_TOPIC + ": " + changeSeatMessage);
     }
 }

@@ -1,31 +1,30 @@
-package org.hhplus.hhplus_concert_service.business.service.listener.reservation;
+package org.hhplus.hhplus_concert_service.business.service.listener.concert;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hhplus.hhplus_concert_service.domain.OutboxEvent;
 import org.hhplus.hhplus_concert_service.persistence.OutBoxEventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Slf4j
 @Service
-public class OutBoxResrevationCompletedPublisher {
+public class OutBoxChangeSeatStatusPublisher {
 
-    @Autowired
-    private OutBoxEventRepository outboxEventRepository;
+    private final OutBoxEventRepository outboxEventRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-
-    private static final String RESERVATION_TOPIC = "reservation-topic";
+    private static final String CHANGE_SEAT_STATUS_TOPIC = "changeSeatStatus-topic";
     private static final int MAX_RETRIES = 3;
 
-    @Scheduled(fixedRate = 5000) // 5초마다 실행
-    @Transactional
+    public OutBoxChangeSeatStatusPublisher(OutBoxEventRepository outboxEventRepository, KafkaTemplate<String, String> kafkaTemplate) {
+        this.outboxEventRepository = outboxEventRepository;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    @Scheduled(fixedRate = 5000)  // 5초마다 실행
     public void publishOutboxEvents() {
         List<OutboxEvent> events = outboxEventRepository.findByProcessedFalse();
 
@@ -40,7 +39,7 @@ public class OutBoxResrevationCompletedPublisher {
 
                 while (!sent && attempt < MAX_RETRIES) {
                     try {
-                        kafkaTemplate.send(RESERVATION_TOPIC, event.getPayload()).get();
+                        kafkaTemplate.send(CHANGE_SEAT_STATUS_TOPIC, event.getPayload()).get();
 
                         // 메시지 전송이 성공하면 아웃박스 이벤트를 처리 완료로 표시
                         event.setProcessed(true);
