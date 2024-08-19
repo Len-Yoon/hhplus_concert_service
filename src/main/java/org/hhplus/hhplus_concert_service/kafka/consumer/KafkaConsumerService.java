@@ -14,12 +14,6 @@ public class KafkaConsumerService {
     private static final Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
     private final BlockingQueue<String> messages = new LinkedBlockingQueue<>();
 
-    @KafkaListener(topics = "test-topic", groupId = "test-group")
-    public void listen(String message) {
-        messages.offer(message);
-        log.info("Received message: " + message);
-    }
-
     @KafkaListener(topics = "reservation-topic", groupId = "reservation-group")
     public void reservationListen(String message) {
         messages.offer(message);

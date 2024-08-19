@@ -28,17 +28,17 @@ public class HhplusConcertServiceApplication {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
-        try {
-            // 메시지 전송
-            ProducerRecord<String, String> record = new ProducerRecord<>("test-topic", "key", "Hello Kafka!");
-            Future<RecordMetadata> future = producer.send(record);
-            RecordMetadata metadata = future.get();
-            System.out.printf("Message sent to topic %s with partition %d and offset %d%n",
-                    metadata.topic(), metadata.partition(), metadata.offset());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            producer.close();
-        }
+//        try {
+//            // 메시지 전송
+//            ProducerRecord<String, String> record = new ProducerRecord<>("test-topic", "key", "Hello Kafka!");
+//            Future<RecordMetadata> future = producer.send(record);
+//            RecordMetadata metadata = future.get();
+//            System.out.printf("Message sent to topic %s with partition %d and offset %d%n",
+//                    metadata.topic(), metadata.partition(), metadata.offset());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            producer.close();
+//        }
     }
 }

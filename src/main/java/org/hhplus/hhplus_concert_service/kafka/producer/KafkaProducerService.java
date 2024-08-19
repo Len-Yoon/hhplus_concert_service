@@ -19,10 +19,6 @@ public class KafkaProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(String topic, String message) {
-        kafkaTemplate.send(topic, message);
-    }
-
     public void sendReservationMessage(String topic, String reservationMessage) {
         kafkaTemplate.send(RESERVATION_TOPIC, reservationMessage);
         log.info("Sent message to " + RESERVATION_TOPIC + ": " + reservationMessage);
