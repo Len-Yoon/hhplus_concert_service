@@ -89,7 +89,7 @@ Tool: K6  <br><br>
 
 ### 목표 TPS  
 min: 500TPS <br> 
-max: 1500TPS  <br><br>
+max: 1000TPS  <br><br>
 
 ### Load Test (부하 테스트)
 Vus: 500 (초당 가상 유저수) <br>
@@ -141,7 +141,7 @@ Duration: 10m <br>
 
 ### 목표 TPS  
 min: 500TPS <br> 
-max: 1500TPS  <br><br>
+max: 1000TPS  <br><br>
 
 ### Load Test (부하 테스트)
 Vus: 500 (초당 가상 유저수) <br>
