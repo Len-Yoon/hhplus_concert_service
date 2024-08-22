@@ -97,18 +97,14 @@ Duration: 60s <br>
 
 <img width="866" alt="스크린샷 2024-08-22 오전 11 29 56" src="https://github.com/user-attachments/assets/897faf17-7080-4e24-89bb-90e0cf52611d"> <br>
 
-#### - 테스트 후기  
-위 조건으로 테스트 할 시, 0.49%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. 
 
-<br><br>
+<br>
 
 ### Soak Test (내구성 테스트)
 Vus: 500 <br>
 Duration: 10m <br>
 
-<img width="848" alt="스크린샷 2024-08-22 오전 11 51 48" src="https://github.com/user-attachments/assets/f85208c0-3707-4561-acd1-a4dd708e162c"> <br>
-#### - 테스트 후기  
-위 조건으로 테스트 할 시, 0.23%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+<img width="848" alt="스크린샷 2024-08-22 오전 11 51 48" src="https://github.com/user-attachments/assets/f85208c0-3707-4561-acd1-a4dd708e162c">  <br><br>
 
 ### Stress Test (스트레스 테스트)
 1. 2분 동안 Vus=500 <br>
@@ -116,11 +112,7 @@ Duration: 10m <br>
 3. 2분 동안 Vus=1000 <br>
 4. 2분 동안 종료 <br>
 
-<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
-
-#### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다.
-<br><br>
+<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br><br>
 
 ### Peak Load Test (최고 부하 테스트)
 1. 2분 동안 500명 유저로 증가 <br>
@@ -128,9 +120,11 @@ Duration: 10m <br>
 3. 2분 동안 다시 500명 유저로 감소 <br>
 
 <img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
+
 #### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 최고 부하테스트에선 안전한 범위안에 있다고 판단됩니다.
-<br><br><br><br>
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. <br><br>
+
+<br><br><br>
 
 ## 2.토큰 대기열 발급
 
@@ -149,17 +143,14 @@ Duration: 60s <br>
 
 <img width="865" alt="스크린샷 2024-08-22 오후 1 35 27" src="https://github.com/user-attachments/assets/fd7ea0a7-644e-4dff-80ea-4eff4baf782b"> <br>
 
-#### - 테스트 후기  
-위 조건으로 테스트 할 시, 1.30%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+
+<br><br>
 
 ### Soak Test (내구성 테스트)
 Vus: 500 <br>
 Duration: 10m <br>
 
 <img width="853" alt="스크린샷 2024-08-22 오후 1 48 46" src="https://github.com/user-attachments/assets/e904c8b1-8902-409f-96bb-57225fcaaf6e"> <br>
-
-#### - 테스트 후기  
-위 조건으로 테스트 할 시, 0.07%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
 
 ### Stress Test (스트레스 테스트)
 1. 2분 동안 Vus=500 <br>
@@ -169,8 +160,6 @@ Duration: 10m <br>
 
 <img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
 
-#### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다.
 <br><br>
 
 ### Stress Test (스트레스 테스트)
@@ -183,9 +172,6 @@ Duration: 10m <br>
 <img width="842" alt="스크린샷 2024-08-22 오후 2 02 16" src="https://github.com/user-attachments/assets/3852d783-bbb1-4ea8-a31e-3fd650c6dafd"> <br>
 
 
-#### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다. <br><br>
-
 ### Peak Load Test (최고 부하 테스트)
 1. 2분 동안 500명 유저로 증가 <br>
 2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
@@ -193,10 +179,38 @@ Duration: 10m <br>
 
 <img width="868" alt="스크린샷 2024-08-22 오후 2 18 56" src="https://github.com/user-attachments/assets/09e8b86f-749a-4b06-ada2-ef7f54117de4"> <br>
 
-#### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 최고 부하테스트에선 안전한 범위안에 있다고 판단됩니다.
-<br><br><br><br>
+<br><br><br>
 
 </details>
+
+## STEP 20
+<details>
+  <summary>장애 발생과 대응 시나리오</summary>
+
+  ### 1. 장애 감지
+  HealthCheck와 같은 모니터링 도구를 통하여 시스템지표, 비지니스 지표, 외부 연동 시스템 지표등 이상 현상을 감지하고 <br>
+  이상 현상 감지 시,MSA 구조에 맞게 각 담당자에게 알람 전달을 전달합니다. <br><br>
+
+  ### 2. 장애 분류 및 우선순위 설정
+  장애의 종류와 심각도를 파악하고 장애의 영향 범위와 비지니스에 미치는 영향을 기반으로 우선순위를 설정합니다. <br><br>
+
+  ### 3. 초기 대응 및 원인 파악
+  임시 조치로 서버 재시작, 트래픽 차단 등의 조치를 취하고, 저장된 Log와 모니터링 데이터를 분석하여 원인을 파악하고 <br>
+  문제와 대응과정을 기록합니다. <br><br>
+  
+  ### 4. 문제 해결
+  원인 분석 결과를 토대로 문제를 해결하기 위한 조치를 취하고 TDD를 통한 서비스의 정상 작동 유무를 테스트합니다. <br><br>
+
+  ### 5. 복구 및 서비스 재개
+  문제 해결 후 서비스를 정상 상태로 복구 하고, 시스템이 정상적으로 작동하는지 지속적으로 모니터링합니다. <br><br>
+
+  ### 6. 사후 분석 및 개선
+  장애 발생 원인과 대응 과정을 분석하는 회의를 진행하고 분석 결과를 토대로 시스템의 취약점을 보완하고 <br>
+  예방 조치를 수립합니다. <br><br>
+
+  ### 7. 문서화 및 보고
+  위의 모든 과정을 포함한 장애 보고서를 작성하고 관련된 사람들과 필요한 정보를 공유합니다.
+</details>
+
 
 
