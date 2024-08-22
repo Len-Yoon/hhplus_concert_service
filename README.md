@@ -97,7 +97,7 @@ Duration: 60s <br>
 
 ```
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 
 export let options = {
     vus: 500, // 가상 사용자 수
@@ -164,7 +164,7 @@ Duration: 10m <br>
 
 ```
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 
 export let options = {
     vus: 500, // 가상 사용자 수
@@ -230,7 +230,7 @@ export default function () {
 
 ```
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 
 export let options = {
     stages: [
@@ -299,7 +299,7 @@ export default function () {
 
 ```
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { sleep } from 'k6';
 
 export let options = {
     stages: [
