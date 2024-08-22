@@ -184,7 +184,7 @@ Duration: 10m <br>
 <details>
   <summary>장애 발생과 대응 시나리오</summary>
 
-  ### 1. 장애 감지
+  ### 1. 장애 감지
   HealthCheck와 같은 모니터링 도구를 통하여 시스템지표, 비지니스 지표, 외부 연동 시스템 지표등 이상 현상을 감지하고 <br>
   이상 현상 감지 시,MSA 구조에 맞게 각 담당자에게 알람 전달을 전달합니다. <br><br>
 
@@ -209,6 +209,3 @@ Duration: 10m <br>
   위의 모든 과정을 포함한 장애 보고서를 작성하고 관련된 사람들과 필요한 정보를 공유합니다.
 </details>
 
-
-
-](https://github.com/Len-Yoon/hhplus_concert_service)
