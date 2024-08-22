@@ -112,12 +112,16 @@ Duration: 10m <br>
 3. 2분 동안 Vus=1000 <br>
 4. 2분 동안 종료 <br>
 
+
+
 <img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br><br>
 
 ### Peak Load Test (최고 부하 테스트)
 1. 2분 동안 500명 유저로 증가 <br>
 2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
 3. 2분 동안 다시 500명 유저로 감소 <br>
+
+
 
 <img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
 
@@ -138,6 +142,36 @@ max: 1000TPS  <br><br>
 Vus: 500 (초당 가상 유저수) <br>
 Duration: 60s <br>
 
+```
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+// 환경변수로 설정된 값을 사용합니다
+const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
+const CONCERT_ID = 1;
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+export const options = {
+    vus: 500,
+    duration: '60s'
+};
+
+export default function () {
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: CONCERT_ID
+    });
+
+    const headers = { 'Content-Type': 'application/json' };
+
+    let response = http.post(API_URL, payload, { headers: headers });
+
+    sleep(1);
+}
+```
+
 <img width="865" alt="스크린샷 2024-08-22 오후 1 35 27" src="https://github.com/user-attachments/assets/fd7ea0a7-644e-4dff-80ea-4eff4baf782b"> <br>
 
 
@@ -147,6 +181,36 @@ Duration: 60s <br>
 Vus: 500 <br>
 Duration: 10m <br>
 
+```
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+// 환경변수로 설정된 값을 사용합니다
+const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
+const CONCERT_ID = 1;
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+export const options = {
+    vus: 500,
+    duration: '10m'
+};
+
+export default function () {
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: CONCERT_ID
+    });
+
+    const headers = { 'Content-Type': 'application/json' };
+
+    let response = http.post(API_URL, payload, { headers: headers });
+
+    sleep(1);
+}
+```
+
 <img width="853" alt="스크린샷 2024-08-22 오후 1 48 46" src="https://github.com/user-attachments/assets/e904c8b1-8902-409f-96bb-57225fcaaf6e"> <br>
 
 ### Stress Test (스트레스 테스트)
@@ -154,6 +218,40 @@ Duration: 10m <br>
 2. 2분 동안 Vus=750 <br>  
 3. 2분 동안 Vus=1000 <br>
 4. 2분 동안 종료 <br>
+
+```
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+// 환경변수로 설정된 값을 사용합니다
+const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
+const CONCERT_ID = 1;
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+export const options = {
+    stages: [
+        { duration: "2m", target: 500 },
+        { duration: "2m", target: 750 },
+        { duration: "2m", target: 1000 },
+        { duration: "2m", target: 0}
+    ],
+};
+
+export default function () {
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: CONCERT_ID
+    });
+
+    const headers = { 'Content-Type': 'application/json' };
+
+    let response = http.post(API_URL, payload, { headers: headers });
+
+    sleep(1);
+}
+```
 
 <img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
 
@@ -173,6 +271,38 @@ Duration: 10m <br>
 1. 2분 동안 500명 유저로 증가 <br>
 2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
 3. 2분 동안 다시 500명 유저로 감소 <br>
+```
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+// 환경변수로 설정된 값을 사용합니다
+const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
+const CONCERT_ID = 1;
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+export const options = {
+    stages: [
+        { duration: "2m", target: 500 },
+        { duration: "5m", target: 1500 },
+        { duration: "2m", target: 500 }
+    ],
+};
+
+export default function () {
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: CONCERT_ID
+    });
+
+    const headers = { 'Content-Type': 'application/json' };
+
+    let response = http.post(API_URL, payload, { headers: headers });
+
+    sleep(1);
+}
+```
 
 <img width="868" alt="스크린샷 2024-08-22 오후 2 18 56" src="https://github.com/user-attachments/assets/09e8b86f-749a-4b06-ada2-ef7f54117de4"> <br>
 
