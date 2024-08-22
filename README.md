@@ -95,6 +95,64 @@ max: 1000TPS  <br><br>
 Vus: 500 (초당 가상 유저수) <br>
 Duration: 60s <br>
 
+```
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export let options = {
+    vus: 500, // 가상 사용자 수
+    duration: '60s', // 테스트 지속 시간
+};
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+
+function generateItemId() {
+    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
+}
+
+function generateSeatId() {
+    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
+}
+
+function generateTotalPrice() {
+    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
+}
+
+export default function () {
+
+    const url = 'http://localhost:8080/reservation';
+
+    // 무작위 데이터 생성
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: 1,
+        itemId: generateItemId(),
+        seatId: generateSeatId(),
+        totalPrice: generateTotalPrice(),
+        status: 'N', // 예약 상태
+    });
+
+    // 요청 헤더 설정
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    // POST 요청 보내기
+    let response = http.post(url, payload, params);
+
+    // 응답 상태 코드와 내용을 검사
+    check(response, {
+        'is status 200': (r) => r.status === 200,
+    });
+
+    sleep(1); // 각 요청 사이의 대기 시간
+}
+```
+
 <img width="866" alt="스크린샷 2024-08-22 오전 11 29 56" src="https://github.com/user-attachments/assets/897faf17-7080-4e24-89bb-90e0cf52611d"> <br>
 
 
@@ -104,6 +162,64 @@ Duration: 60s <br>
 Vus: 500 <br>
 Duration: 10m <br>
 
+```
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export let options = {
+    vus: 500, // 가상 사용자 수
+    duration: '10m', // 테스트 지속 시간
+};
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+
+function generateItemId() {
+    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
+}
+
+function generateSeatId() {
+    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
+}
+
+function generateTotalPrice() {
+    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
+}
+
+export default function () {
+
+    const url = 'http://localhost:8080/reservation';
+
+    // 무작위 데이터 생성
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: 1,
+        itemId: generateItemId(),
+        seatId: generateSeatId(),
+        totalPrice: generateTotalPrice(),
+        status: 'N', // 예약 상태
+    });
+
+    // 요청 헤더 설정
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    // POST 요청 보내기
+    let response = http.post(url, payload, params);
+
+    // 응답 상태 코드와 내용을 검사
+    check(response, {
+        'is status 200': (r) => r.status === 200,
+    });
+
+    sleep(1); // 각 요청 사이의 대기 시간
+}
+```
+
 <img width="848" alt="스크린샷 2024-08-22 오전 11 51 48" src="https://github.com/user-attachments/assets/f85208c0-3707-4561-acd1-a4dd708e162c">  <br><br>
 
 ### Stress Test (스트레스 테스트)
@@ -112,7 +228,67 @@ Duration: 10m <br>
 3. 2분 동안 Vus=1000 <br>
 4. 2분 동안 종료 <br>
 
+```
+import http from 'k6/http';
+import { check, sleep } from 'k6';
 
+export let options = {
+    stages: [
+        { duration: "2m", target: 500 },
+        { duration: "2m", target: 750 },
+        { duration: "2m", target: 1000 },
+        { duration: "2m", target: 0 }
+    ],
+};
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+
+function generateItemId() {
+    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
+}
+
+function generateSeatId() {
+    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
+}
+
+function generateTotalPrice() {
+    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
+}
+
+export default function () {
+
+    const url = 'http://localhost:8080/reservation';
+
+    // 무작위 데이터 생성
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: 1,
+        itemId: generateItemId(),
+        seatId: generateSeatId(),
+        totalPrice: generateTotalPrice(),
+        status: 'N', // 예약 상태
+    });
+
+    // 요청 헤더 설정
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    // POST 요청 보내기
+    let response = http.post(url, payload, params);
+
+    // 응답 상태 코드와 내용을 검사
+    check(response, {
+        'is status 200': (r) => r.status === 200,
+    });
+
+    sleep(1); // 각 요청 사이의 대기 시간
+}
+```
 
 <img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br><br>
 
@@ -121,7 +297,66 @@ Duration: 10m <br>
 2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
 3. 2분 동안 다시 500명 유저로 감소 <br>
 
+```
+import http from 'k6/http';
+import { check, sleep } from 'k6';
 
+export let options = {
+    stages: [
+        { duration: "2m", target: 500 },
+        { duration: "5m", target: 1500 },
+        { duration: "2m", target: 5000 }
+    ],
+};
+
+function generateUserId() {
+    return 'user_' + Math.floor(Math.random() * 100000);
+}
+
+function generateItemId() {
+    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
+}
+
+function generateSeatId() {
+    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
+}
+
+function generateTotalPrice() {
+    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
+}
+
+export default function () {
+
+    const url = 'http://localhost:8080/reservation';
+
+    // 무작위 데이터 생성
+    const payload = JSON.stringify({
+        userId: generateUserId(),
+        concertId: 1,
+        itemId: generateItemId(),
+        seatId: generateSeatId(),
+        totalPrice: generateTotalPrice(),
+        status: 'N', // 예약 상태
+    });
+
+    // 요청 헤더 설정
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    // POST 요청 보내기
+    let response = http.post(url, payload, params);
+
+    // 응답 상태 코드와 내용을 검사
+    check(response, {
+        'is status 200': (r) => r.status === 200,
+    });
+
+    sleep(1); // 각 요청 사이의 대기 시간
+}
+```
 
 <img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
 
@@ -256,16 +491,6 @@ export default function () {
 <img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
 
 <br><br>
-
-### Stress Test (스트레스 테스트)
-
-1. 2분 동안 Vus=500 <br>
-2. 2분 동안 Vus=750 <br>  
-3. 2분 동안 Vus=1000 <br>
-4. 2분 동안 종료 <br>
-
-<img width="842" alt="스크린샷 2024-08-22 오후 2 02 16" src="https://github.com/user-attachments/assets/3852d783-bbb1-4ea8-a31e-3fd650c6dafd"> <br>
-
 
 ### Peak Load Test (최고 부하 테스트)
 1. 2분 동안 500명 유저로 증가 <br>
