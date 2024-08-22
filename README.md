@@ -121,9 +121,6 @@ Duration: 10m <br>
 
 <img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
 
-#### 테스트 후기 
-위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. <br><br>
-
 <br><br><br>
 
 ## 2.토큰 대기열 발급
