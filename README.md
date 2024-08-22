@@ -1,4 +1,4 @@
-# (hhplus_concert_service 9주차)
+## (hhplus_concert_service 10주차)
 ### 콘서트 예약 서비스
 <details>
 <summary>제공 서비스</summary>
@@ -68,63 +68,194 @@
 
 <br>
 
-## STEP16
+## STEP19
 <details>
-  <summary>Kafka 설치</summary>
+  <summary>부하 테스트 시나리오</summary>
 
-  ## kafka 설치 
+## 부하 테스트 환경
 
-  ### 1. docker-compose.yml 추가
+### 사양
+CPU: M2 Pro <br>
+Ram: 16Gb <br>
+ssd: 512Gb <br>
+Tool: K6  <br><br>
 
-  ```
+## 1. 콘서트 선택 (/concert)
 
-services:
-  zookeeper:
-    image: 'confluentinc/cp-zookeeper:latest'
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - '2181:2181'
+### 선정이유
+예매를 위한 첫번 째 단계로서 예매가 시작되는 순간, 수많은 사용자가 동시에 콘서트를 선택할려고 시도합니다. <br>
+이 시점에서 서버가 얼마나 많은 동시 접속을 처리할 수 있는지 테스트해야합니다. <br>
+그렇기에 부하테스트를 진행하였습니다. <br><br>
 
-  kafka:
-    image: 'confluentinc/cp-kafka:latest'
-    container_name: kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - '9092:9092'
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  ```
+
+#### 시나리오
+Data: 3000Row <br><br>
+
+### Load Test (부하 테스트)
+Vus: 500 (초당 가상 유저수) <br>
+Duration: 60s <br>
+
+<img width="866" alt="스크린샷 2024-08-22 오전 11 29 56" src="https://github.com/user-attachments/assets/897faf17-7080-4e24-89bb-90e0cf52611d"> <br>
+
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 0.49%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. 
+
 <br><br>
 
-### 2. Kafka 실행 화면
-<img width="1385" alt="스크린샷 2024-08-14 오후 8 01 26" src="https://github.com/user-attachments/assets/4d0b4f18-c0d5-4361-9511-3f6ddcb5a92a"> <br>
+### Soak Test (내구성 테스트)
+Vus: 500 <br>
+Duration: 10m <br>
 
-<img width="1269" alt="스크린샷 2024-08-14 오후 8 03 03" src="https://github.com/user-attachments/assets/384c3cfb-02d1-40f2-a1dd-a2bebf869a5e">
+<img width="848" alt="스크린샷 2024-08-22 오전 11 51 48" src="https://github.com/user-attachments/assets/f85208c0-3707-4561-acd1-a4dd708e162c">
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 0.23%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
 
+### Stress Test (스트레스 테스트)
+1. 2분 동안 Vus=500 <br>
+2. 2분 동안 Vus=750 <br>  
+3. 2분 동안 Vus=1000 <br>
+4. 2분 동안 종료 <br>
+
+<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다.
 <br><br>
-### 3. 연동 테스트 화면
 
-<img width="1653" alt="스크린샷 2024-08-16 오전 3 12 37" src="https://github.com/user-attachments/assets/3028960a-c81e-45de-a159-f79d0a261561">
+### Peak Load Test (최고 부하 테스트)
+1. 2분 동안 500명 유저로 증가 <br>
+2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
+3. 2분 동안 다시 500명 유저로 감소 <br>
 
-</details>
+<img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 최고 부하테스트에선 안전한 범위안에 있다고 판단됩니다.
+<br><br><br><br>
 
-## STEP 17
-<details>
-  <summary>카프카 적용 및 OutBox 패턴 추가</summary>
+## 2.콘서트 좌석 조회 (/concert/concertSeat?concertId)
 
-  ### 적용 범위
-  1. 예약 후 콘서트 좌석 상태 변경
-  2. 예약 완료 후 토큰 삭제
-  3. 포인트 차감 후 결제내역 저장 
+### 선정이유
+예매를 함에 있어 가장 의미있고 트랜잭션에 부하가 많고 오류가 나면 안되는 부분이라 생각하였습니다. <br>
+그렇기에 부하 테스트를 진행하였습니다. <br><br>
+
+#### 시나리오
+Data: 1000Row <br><br>
+
+### Load Test (부하 테스트)
+Vus: 500 (초당 가상 유저수) <br>
+Duration: 60s <br>
+
+<img width="865" alt="스크린샷 2024-08-22 오후 1 35 27" src="https://github.com/user-attachments/assets/fd7ea0a7-644e-4dff-80ea-4eff4baf782b"> <br>
+
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 1.30%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+
+### Soak Test (내구성 테스트)
+Vus: 500 <br>
+Duration: 10m <br>
+
+<img width="853" alt="스크린샷 2024-08-22 오후 1 48 46" src="https://github.com/user-attachments/assets/e904c8b1-8902-409f-96bb-57225fcaaf6e"> <br>
+
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 0.07%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+
+### Stress Test (스트레스 테스트)
+1. 2분 동안 Vus=500 <br>
+2. 2분 동안 Vus=750 <br>  
+3. 2분 동안 Vus=1000 <br>
+4. 2분 동안 종료 <br>
+
+<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다.
+<br><br>
+
+### Stress Test (스트레스 테스트)
+
+1. 2분 동안 Vus=500 <br>
+2. 2분 동안 Vus=750 <br>  
+3. 2분 동안 Vus=1000 <br>
+4. 2분 동안 종료 <br>
+
+<img width="842" alt="스크린샷 2024-08-22 오후 2 02 16" src="https://github.com/user-attachments/assets/3852d783-bbb1-4ea8-a31e-3fd650c6dafd"> <br>
+
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다. <br><br>
+
+### Peak Load Test (최고 부하 테스트)
+1. 2분 동안 500명 유저로 증가 <br>
+2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
+3. 2분 동안 다시 500명 유저로 감소 <br>
+
+<img width="868" alt="스크린샷 2024-08-22 오후 2 18 56" src="https://github.com/user-attachments/assets/09e8b86f-749a-4b06-ada2-ef7f54117de4"> <br>
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 최고 부하테스트에선 안전한 범위안에 있다고 판단됩니다.
+<br><br><br><br>
+
+## 3. 토큰 발급 (/token/add?userId=""&concertId="")
+
+### 선정이유
+새로운 토큰을 생성하고 Redis와 데이터베이스에 동시에 저장하는 기능입니다. <br>
+특히 Redis의 'ZSet'에 토큰을 추가하는 작업은 높은 부하를 일으키고, 그로 인해 <br>
+대량의 토큰 생성시 성능 저하 문제가 발생할 수 있다 생각했습니다. <br><br>
+
+### Load Test (부하 테스트)
+Vus: 500 (초당 가상 유저수) <br>
+Duration: 60s <br>
+
+<img width="865" alt="스크린샷 2024-08-22 오후 1 35 27" src="https://github.com/user-attachments/assets/fd7ea0a7-644e-4dff-80ea-4eff4baf782b"> <br>
+
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 1.30%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+
+### Soak Test (내구성 테스트)
+Vus: 500 <br>
+Duration: 10m <br>
+
+<img width="853" alt="스크린샷 2024-08-22 오후 1 48 46" src="https://github.com/user-attachments/assets/e904c8b1-8902-409f-96bb-57225fcaaf6e"> <br>
+
+#### - 테스트 후기  
+위 조건으로 테스트 할 시, 0.07%의 실패율을 보였습니다. 여러번 돌려도 비슷한 결과가 나왔기에 실패 비중이 적다고 판단하여 실패한 케이스에 한하여 retry하도록 하였습니다. <br><br>
+
+### Stress Test (스트레스 테스트)
+1. 2분 동안 Vus=500 <br>
+2. 2분 동안 Vus=750 <br>  
+3. 2분 동안 Vus=1000 <br>
+4. 2분 동안 종료 <br>
+
+<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다.
+<br><br>
+
+### Stress Test (스트레스 테스트)
+
+1. 2분 동안 Vus=500 <br>
+2. 2분 동안 Vus=750 <br>  
+3. 2분 동안 Vus=1000 <br>
+4. 2분 동안 종료 <br>
+
+<img width="842" alt="스크린샷 2024-08-22 오후 2 02 16" src="https://github.com/user-attachments/assets/3852d783-bbb1-4ea8-a31e-3fd650c6dafd"> <br>
+
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 스트레스에선 안전한 범위안에 있다고 판단됩니다. <br><br>
+
+### Peak Load Test (최고 부하 테스트)
+1. 2분 동안 500명 유저로 증가 <br>
+2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
+3. 2분 동안 다시 500명 유저로 감소 <br>
+
+<img width="868" alt="스크린샷 2024-08-22 오후 2 18 56" src="https://github.com/user-attachments/assets/09e8b86f-749a-4b06-ada2-ef7f54117de4"> <br>
+
+#### 테스트 후기 
+위 조건으로 테스트 할 시, 0% 실패율을 보였습니다. 안정적인 최고 부하테스트에선 안전한 범위안에 있다고 판단됩니다.
+<br><br><br><br>
+
 </details>
 
 
