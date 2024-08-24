@@ -1,4 +1,4 @@
-## (hhplus_concert_service 10주차)
+3## (hhplus_concert_service 10주차)
 ### 콘서트 예약 서비스
 <details>
 <summary>제공 서비스</summary>
@@ -564,5 +564,8 @@ export default function () {
   위의 모든 과정을 포함한 장애 보고서를 작성하고 관련된 사람들과 필요한 정보를 공유합니다.
 </details>
 
-
+합격 뱃지 <br>
+<a href="https://hhpluscertificateofcompletion.oopy.io/">
+  <img src="https://static.spartacodingclub.kr/hanghae99/plus/completion/badge_purple.svg" />
+</a>
 
