@@ -1,4 +1,4 @@
-3## (hhplus_concert_service 10주차)
+## (hhplus_concert_service 10주차)
 ### 콘서트 예약 서비스
 <details>
 <summary>제공 서비스</summary>
