@@ -1,0 +1,95 @@
+spring:
+  application:
+    name: hhplus-concert
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/concert
+    username: concert
+    password: concert1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+        order_updates: true
+#    show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: dev-topic
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: dev-group
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+concert:
+  limit:
+    processCount: 2000
+  queueKey: 'concert-waiting-queue'
+  topic_groups:
+    point: point
+    waitingToken: waiting-token
+    reservation: reservation
+    outbox: outbox
+
+server:
+  port: 8080
+
+#logging:
+#  level:
+#    com.hhplusconcert: info
+---
+spring:
+  application:
+    name: hhplus-concert
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/concert_test
+    username: concert_test
+    password: concert_test1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: test-group
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      auto-offset-reset: earliest
+concert:
+  limit:
+    processCount: 50
+  queueKey: 'concert-waiting-queue-test'
+  topic_groups:
+    point: test-point
+    waitingToken: test-waiting-token
+    reservation: test-reservation
+    outbox: test-outbox
+
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.hhplusconcert: info
