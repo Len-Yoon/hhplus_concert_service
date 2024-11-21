@@ -1,571 +1,256 @@
-## (hhplus_concert_service 10주차)
-### 콘서트 예약 서비스
+# 애니메이션 OST를 위한 콘서트 예약 서비스입니다.
+
 <details>
-<summary>제공 서비스</summary>
-  <li>1.예약 가능 콘서트 조회</li>
-  <li>2.콘서트 날짜 및 좌석 조회</li>
-  <li>3.콘서트 예약</li>
-  <li>4.포인트 조회/충전/사용</li>
-  <li>결제</li>
+    <summary>사용자에게 제공되는 기능</summary>
+
+1. 공연 목록 조회
+2. 공연 날짜 및 좌석 조회
+3. 공연 예약
+4. 포인트 충전/사용/조회
+5. 결제
 </details>
 
 <details>
-<summary>오류 검증 테스트</summary>
-  <ul>
-    <li>콘서트 조회</li>
-      <ul>
-        <li>1. 예약 가능 콘서트가 아닌 경우</li>
-      </ul>
-  </ul>
+    <summary>오류 발생 케이스</summary>
 
-  <ul>
-    <li>콘서트 예약</li>
-    <ul>
-      <li>1.이미 예약된 좌석일 경우</li>
-      <li>2.예약 후 5분 내 결제를 완료하지 않은 경우</li>
-    </ul>
-  </ul>
-  
-  <ul>
-    <li>포인트 조회/충전/사용</li>
-      <ul>
-        <li>1.충전 포인트가 0보다 작은경우</li>
-      </ul>
-  </ul>
-
-  <ul>
-    <li>결제</li>
-      <ul>
-        <li>1.포인트가 부족할 경우</li>
-        <li>2.토큰이 없는 경우</li>
-      </ul>
-  </ul>
+1. 공연 날짜 및 좌석 조회
+    1. 공연 날짜별로 생성이 안된 경우
+2. 공연 예약
+    1. 좌석이 이미 예약 된 경우
+    2. 예약할 수 없는 Token을 가지고 있는 경우
+       ex) 만료된 토큰 or 유효하지 않은 토큰
+3. 포인트 충전/사용
+    1. 동시에 여러번의 요청이 들어온 경우
+    2. 사용금액이 보유 금액보다 많을 경우
+    3. 0원을 충전/사용 하려 하는 경우
+4. 결제
+    1. 포인트가 결제 비용보다 적을 경우
+    2. 예약한 좌석이 결제시간(5분)을 넘겨 해지된 경우
 </details>
 
-<br>
-
-### 마일스톤
 <details>
-  <summary>마일스톤</summary>
-  <li>
-    <img width="1029" alt="마일스톤" src="https://github.com/user-attachments/assets/3f7307e9-0d13-4f24-a364-2af9366696de">
+    <summary>테스트시 주의 사항</summary>
 
- </li>
+1. 대기열
+    1. 몇명이 들어올 것인가
+    2. 몇명이 대기할 것인가
+    3. 몇명을 입장 시킬 것인가
+2. 콘서트 예약
+    1. 여러명이 동일한 좌석을 요청할 경우
+3. 결제
+    1. 포인트 사용시 오류가 발생하였으면 임시예약한 공연은 어떻게 처리할 것인가.
+    2. 결제 요청한 임시예약 공연은 유효한가?
 </details>
 
-### 시퀀스 다이어그램
+## Sequence Diagram
 <details>
-  <summary>Sqeunce</summary>
-  <li><img width="521" alt="유스케이스 예시" src="https://github.com/user-attachments/assets/12258fb1-8da2-45b8-afbb-78de93634a0f">
-</li>
-</details>
+    <summary>1. 대기열 토큰 발급</summary>
 
-### 유스케이스
+```mermaid
+sequenceDiagram
+
+	actor User
+	participant ConcertToken
+	participant ConcertQueue
+	
+	Note over User,ConcertToken: 토큰발급
+	User->>+ConcertToken: 1. 대기열 입장을 위한 토큰 발급 요청
+	ConcertToken->>+ConcertQueue: 2. 현재 대기열 조회
+	ConcertQueue-->>-ConcertToken: 3. 현재 대기열 상황 반환
+	ConcertToken->>ConcertToken: 4. 유저 정보를 통해 토큰 생성
+	ConcertToken-->User: 5. 대기를 위한 토큰 발행
+```
+</details>
 <details>
-  <summary>Usecase</summary>
-  <li><img width="500" alt="유스케이스 다이어그램" src="https://github.com/user-attachments/assets/eaea2ac8-4eed-4792-b50e-73162d165d52"></li>
+    <summary>2. 토큰을 통한 사이트 입장 대기열 체크</summary>
+
+Tip:   
+특정시간동안 N명에게만 권한을 부여한다 - 신청가능 권한   
+한번에 활성화된 최대 유저를 N으로 유지한다.   
+```mermaid
+sequenceDiagram
+
+	actor User
+	participant ConcertQueue
+	participant ConcertToken
+
+	Note over User,ConcertToken: token 갱신
+	loop 사용자의 토큰 Health Check Polling방식
+		User->>+ConcertQueue: 1. 대기열 진입 ( polling 방식)
+		ConcertQueue->>+ConcertToken: 2. Health Check
+		break 토큰 만료로 인한 종료
+			ConcertToken-->>ConcertQueue: 3. 토큰 만료로 인한 종료 Exception 발행
+			ConcertQueue-->>User:4. Token만료로 인한 종료
+		end
+		ConcertToken->>ConcertToken: 5. Token 만료시간 및 마지막 Health Check시간 수정
+		ConcertToken-->>ConcertQueue: 6. 생존 신고
+		ConcertQueue->>ConcertQueue: 7. 대기열 체크
+		
+		alt 입장 순위의 경우
+			ConcertQueue->>ConcertQueue: 8. 해당 토큰의 대기열 상태 입장으로 변경
+			break 입상순위로 인한 Loop 탈출
+				ConcertQueue-->>-User: 9-1. 대기 종료로 인한 콘서트 신청 페이지로 Redirect요청 반환
+			end
+		else
+			ConcertQueue-->>User: 9-2.현재 대기 상황 반환
+		end
+	end
+```
 </details>
-
-<br>
-
-## STEP19
 <details>
-  <summary>부하 테스트 시나리오</summary>
+    <summary>3. 예약 가능 날짜/좌석 조회 API</summary>
 
-## 부하 테스트 환경
+Tip: 좌석 정보는 1 ~ 50 까지의 좌석 번호를 관리합니다.
+```mermaid
+sequenceDiagram
 
-### 사양
-CPU: M2 Pro <br>
-Ram: 16Gb <br>
-ssd: 512Gb <br>
-Tool: K6  <br><br>
-
-## 1. 좌석 선택 및 예약 
-
-### 선정이유
-콘서트 예매에 있어 가장 중요한 부분이고 트래픽이 가장 많이 몰리는 부분이라 생각했습니다. <br>
-이 시점에서 서버가 얼마나 많은 동시 접속을 처리할 수 있는지 테스트해야합니다. <br>
-그렇기에 부하테스트를 진행하였습니다. <br><br>
-
-### 목표 TPS  
-min: 500TPS <br> 
-max: 1000TPS  <br><br>
-
-### Load Test (부하 테스트)
-Vus: 500 (초당 가상 유저수) <br>
-Duration: 60s <br>
-
+	actor User
+	participant ConcertSeries
+	participant ConcertSheet
+	
+	Note over User, ConcertSheet: 콘서트 예약 가능 좌석 조회
+	User->>+ConcertSeries: 1. 현재 예약 가능한 날짜 요청
+	ConcertSeries-->>-User: 2. 예약 가능한 날짜 반환
+	User->>+ConcertSeries: 3. 선택한 날짜에 예약가능한 좌석 요청
+	ConcertSeries->>+ConcertSheet: 4. 예약가능한 좌석 요청
+	ConcertSheet-->>-ConcertSeries: 5. 예약가능한 좌석 반환
+	ConcertSeries-->>-User: 6. 해당 콘서트 예약 가능한 좌석 반환
 ```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-export let options = {
-    vus: 500, // 가상 사용자 수
-    duration: '60s', // 테스트 지속 시간
-};
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-
-function generateItemId() {
-    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
-}
-
-function generateSeatId() {
-    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
-}
-
-function generateTotalPrice() {
-    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
-}
-
-export default function () {
-
-    const url = 'http://localhost:8080/reservation';
-
-    // 무작위 데이터 생성
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: 1,
-        itemId: generateItemId(),
-        seatId: generateSeatId(),
-        totalPrice: generateTotalPrice(),
-        status: 'N', // 예약 상태
-    });
-
-    // 요청 헤더 설정
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // POST 요청 보내기
-    let response = http.post(url, payload, params);
-
-    // 응답 상태 코드와 내용을 검사
-    check(response, {
-        'is status 200': (r) => r.status === 200,
-    });
-
-    sleep(1); // 각 요청 사이의 대기 시간
-}
-```
-
-<img width="866" alt="스크린샷 2024-08-22 오전 11 29 56" src="https://github.com/user-attachments/assets/897faf17-7080-4e24-89bb-90e0cf52611d"> <br>
-
-
-<br>
-
-### Soak Test (내구성 테스트)
-Vus: 500 <br>
-Duration: 10m <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-export let options = {
-    vus: 500, // 가상 사용자 수
-    duration: '10m', // 테스트 지속 시간
-};
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-
-function generateItemId() {
-    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
-}
-
-function generateSeatId() {
-    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
-}
-
-function generateTotalPrice() {
-    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
-}
-
-export default function () {
-
-    const url = 'http://localhost:8080/reservation';
-
-    // 무작위 데이터 생성
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: 1,
-        itemId: generateItemId(),
-        seatId: generateSeatId(),
-        totalPrice: generateTotalPrice(),
-        status: 'N', // 예약 상태
-    });
-
-    // 요청 헤더 설정
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // POST 요청 보내기
-    let response = http.post(url, payload, params);
-
-    // 응답 상태 코드와 내용을 검사
-    check(response, {
-        'is status 200': (r) => r.status === 200,
-    });
-
-    sleep(1); // 각 요청 사이의 대기 시간
-}
-```
-
-<img width="848" alt="스크린샷 2024-08-22 오전 11 51 48" src="https://github.com/user-attachments/assets/f85208c0-3707-4561-acd1-a4dd708e162c">  <br><br>
-
-### Stress Test (스트레스 테스트)
-1. 2분 동안 Vus=500 <br>
-2. 2분 동안 Vus=750 <br>  
-3. 2분 동안 Vus=1000 <br>
-4. 2분 동안 종료 <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-export let options = {
-    stages: [
-        { duration: "2m", target: 500 },
-        { duration: "2m", target: 750 },
-        { duration: "2m", target: 1000 },
-        { duration: "2m", target: 0 }
-    ],
-};
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-
-function generateItemId() {
-    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
-}
-
-function generateSeatId() {
-    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
-}
-
-function generateTotalPrice() {
-    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
-}
-
-export default function () {
-
-    const url = 'http://localhost:8080/reservation';
-
-    // 무작위 데이터 생성
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: 1,
-        itemId: generateItemId(),
-        seatId: generateSeatId(),
-        totalPrice: generateTotalPrice(),
-        status: 'N', // 예약 상태
-    });
-
-    // 요청 헤더 설정
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // POST 요청 보내기
-    let response = http.post(url, payload, params);
-
-    // 응답 상태 코드와 내용을 검사
-    check(response, {
-        'is status 200': (r) => r.status === 200,
-    });
-
-    sleep(1); // 각 요청 사이의 대기 시간
-}
-```
-
-<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br><br>
-
-### Peak Load Test (최고 부하 테스트)
-1. 2분 동안 500명 유저로 증가 <br>
-2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
-3. 2분 동안 다시 500명 유저로 감소 <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-export let options = {
-    stages: [
-        { duration: "2m", target: 500 },
-        { duration: "5m", target: 1500 },
-        { duration: "2m", target: 5000 }
-    ],
-};
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-
-function generateItemId() {
-    return Math.floor(Math.random() * 100) + 1; // 무작위 itemId 생성 (1-100)
-}
-
-function generateSeatId() {
-    return Math.floor(Math.random() * 50) + 1; // 무작위 seatId 생성 (1-50)
-}
-
-function generateTotalPrice() {
-    return Math.floor(Math.random() * 1000) + 100; // 무작위 totalPrice 생성 (100-1100)
-}
-
-export default function () {
-
-    const url = 'http://localhost:8080/reservation';
-
-    // 무작위 데이터 생성
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: 1,
-        itemId: generateItemId(),
-        seatId: generateSeatId(),
-        totalPrice: generateTotalPrice(),
-        status: 'N', // 예약 상태
-    });
-
-    // 요청 헤더 설정
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // POST 요청 보내기
-    let response = http.post(url, payload, params);
-
-    // 응답 상태 코드와 내용을 검사
-    check(response, {
-        'is status 200': (r) => r.status === 200,
-    });
-
-    sleep(1); // 각 요청 사이의 대기 시간
-}
-```
-
-<img width="832" alt="스크린샷 2024-08-22 오후 12 18 19" src="https://github.com/user-attachments/assets/b053cbd3-39d2-486f-8c45-0d848c31bc7b"> <br>
-
-<br><br><br>
-
-## 2.토큰 대기열 발급
-
-### 선정이유
-새로운 토큰을 생성하고 Redis와 데이터베이스에 동시에 저장하는 기능입니다. <br>
-특히 Redis의 'ZSet'에 토큰을 추가하는 작업은 높은 부하를 일으키고, 그로 인해 <br>
-대량의 토큰 생성시 성능 저하 문제가 발생할 수 있다 생각했습니다. <br><br>
-
-### 목표 TPS  
-min: 500TPS <br> 
-max: 1000TPS  <br><br>
-
-### Load Test (부하 테스트)
-Vus: 500 (초당 가상 유저수) <br>
-Duration: 60s <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-// 환경변수로 설정된 값을 사용합니다
-const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
-const CONCERT_ID = 1;
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-export const options = {
-    vus: 500,
-    duration: '60s'
-};
-
-export default function () {
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: CONCERT_ID
-    });
-
-    const headers = { 'Content-Type': 'application/json' };
-
-    let response = http.post(API_URL, payload, { headers: headers });
-
-    sleep(1);
-}
-```
-
-<img width="865" alt="스크린샷 2024-08-22 오후 1 35 27" src="https://github.com/user-attachments/assets/fd7ea0a7-644e-4dff-80ea-4eff4baf782b"> <br>
-
-
-<br><br>
-
-### Soak Test (내구성 테스트)
-Vus: 500 <br>
-Duration: 10m <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-// 환경변수로 설정된 값을 사용합니다
-const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
-const CONCERT_ID = 1;
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-export const options = {
-    vus: 500,
-    duration: '10m'
-};
-
-export default function () {
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: CONCERT_ID
-    });
-
-    const headers = { 'Content-Type': 'application/json' };
-
-    let response = http.post(API_URL, payload, { headers: headers });
-
-    sleep(1);
-}
-```
-
-<img width="853" alt="스크린샷 2024-08-22 오후 1 48 46" src="https://github.com/user-attachments/assets/e904c8b1-8902-409f-96bb-57225fcaaf6e"> <br>
-
-### Stress Test (스트레스 테스트)
-1. 2분 동안 Vus=500 <br>
-2. 2분 동안 Vus=750 <br>  
-3. 2분 동안 Vus=1000 <br>
-4. 2분 동안 종료 <br>
-
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-// 환경변수로 설정된 값을 사용합니다
-const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
-const CONCERT_ID = 1;
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-export const options = {
-    stages: [
-        { duration: "2m", target: 500 },
-        { duration: "2m", target: 750 },
-        { duration: "2m", target: 1000 },
-        { duration: "2m", target: 0}
-    ],
-};
-
-export default function () {
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: CONCERT_ID
-    });
-
-    const headers = { 'Content-Type': 'application/json' };
-
-    let response = http.post(API_URL, payload, { headers: headers });
-
-    sleep(1);
-}
-```
-
-<img width="830" alt="스크린샷 2024-08-22 오후 12 06 16" src="https://github.com/user-attachments/assets/1bf3d17e-8b6c-4cbb-a9b7-c75f64d6b6b5"> <br>
-
-<br><br>
-
-### Peak Load Test (최고 부하 테스트)
-1. 2분 동안 500명 유저로 증가 <br>
-2. 5분 동안 1500명 유저로 최고 부하 테스트 <br>
-3. 2분 동안 다시 500명 유저로 감소 <br>
-```
-import http from 'k6/http';
-import { sleep } from 'k6';
-
-// 환경변수로 설정된 값을 사용합니다
-const API_URL = __ENV.API_URL || 'http://localhost:8080/token/add';
-const CONCERT_ID = 1;
-
-function generateUserId() {
-    return 'user_' + Math.floor(Math.random() * 100000);
-}
-export const options = {
-    stages: [
-        { duration: "2m", target: 500 },
-        { duration: "5m", target: 1500 },
-        { duration: "2m", target: 500 }
-    ],
-};
-
-export default function () {
-    const payload = JSON.stringify({
-        userId: generateUserId(),
-        concertId: CONCERT_ID
-    });
-
-    const headers = { 'Content-Type': 'application/json' };
-
-    let response = http.post(API_URL, payload, { headers: headers });
-
-    sleep(1);
-}
-```
-
-<img width="868" alt="스크린샷 2024-08-22 오후 2 18 56" src="https://github.com/user-attachments/assets/09e8b86f-749a-4b06-ada2-ef7f54117de4"> <br>
-
-<br><br><br>
-
 </details>
-
-## STEP 20
 <details>
-  <summary>장애 발생과 대응 시나리오</summary>
+    <summary>4. 좌석 예약 요청 API</summary>
 
-  ### 1. 장애 감지
-  HealthCheck와 같은 모니터링 도구를 통하여 시스템지표, 비지니스 지표, 외부 연동 시스템 지표등 이상 현상을 감지하고 <br>
-  이상 현상 감지 시,MSA 구조에 맞게 각 담당자에게 알람 전달을 전달합니다. <br><br>
+Tip: 임시 배정 시간은 5분입니다.
+```mermaid
+sequenceDiagram
 
-  ### 2. 장애 분류 및 우선순위 설정
-  장애의 종류와 심각도를 파악하고 장애의 영향 범위와 비지니스에 미치는 영향을 기반으로 우선순위를 설정합니다. <br><br>
+	actor User
+	participant ConcertSheet
+	
+	Note over User, TemporaryReservation: 선택한 좌석 예약 신청
+	User->>+ConcertSheet: 1. 예약가능한 좌석 요청
+	alt 좌석이 있을경우
+		ConcertSheet->>+TemporaryReservation: 2-1. 선택한 좌석 신청
+	else 좌석이 이미 예약된 경우
+		ConcertSheet->>User: 2-2. 예약된 좌석이므로 Exception
+	end
+	TemporaryReservation->>TemporaryReservation: 3. 좌석 임시 예약
+	TemporaryReservation-->>-ConcertSheet: 4. 임시예약 신청 여부 반환
+	ConcertSheet-->>-User: 5. 임시예약 신청 여부 반환
+```
+</details>
+<details>
+    <summary>5. 잔액 충전/조회 API</summary>
 
-  ### 3. 초기 대응 및 원인 파악
-  임시 조치로 서버 재시작, 트래픽 차단 등의 조치를 취하고, 저장된 Log와 모니터링 데이터를 분석하여 원인을 파악하고 <br>
-  문제와 대응과정을 기록합니다. <br><br>
-  
-  ### 4. 문제 해결
-  원인 분석 결과를 토대로 문제를 해결하기 위한 조치를 취하고 TDD를 통한 서비스의 정상 작동 유무를 테스트합니다. <br><br>
+```mermaid
+sequenceDiagram
 
-  ### 5. 복구 및 서비스 재개
-  문제 해결 후 서비스를 정상 상태로 복구 하고, 시스템이 정상적으로 작동하는지 지속적으로 모니터링합니다. <br><br>
+	actor User
+	participant Point
+	participant PointHistory
+	
+	Note over User,PointHistory: 1. 잔액충전/조회 API
+	User->>+Point: 2. 현재 잔액 정보 요청
+	Point-->>-User: 3. 정보 반환
+	User->>+Point: 4. 잔액 충전 요청
+	Point->>Point: 5. 잔액 충전
+	Point->>PointHistory: 6. 잔액 충전 History 생성 요청
+	PointHistory-->>Point: 7. History 생성완료 
+	Point-->>-User: 8. 잔액 충전 여부 반환
+```
+</details>
+<details>
+    <summary>6. 결제 API</summary>
 
-  ### 6. 사후 분석 및 개선
-  장애 발생 원인과 대응 과정을 분석하는 회의를 진행하고 분석 결과를 토대로 시스템의 취약점을 보완하고 <br>
-  예방 조치를 수립합니다. <br><br>
+```mermaid
+sequenceDiagram
 
-  ### 7. 문서화 및 보고
-  위의 모든 과정을 포함한 장애 보고서를 작성하고 관련된 사람들과 필요한 정보를 공유합니다.
+	actor User
+	participant Payment
+	participant Point
+	participant PointHistory
+	participant TemporaryReservation
+	participant Reservation
+	participant ConcertToken
+	participant ConcertQueue
+	
+	Note over User,PointHistory: 1. 콘서트 결제
+	User->>+Payment: 2. 임시 에약한 좌석 결제 요청
+	Payment->>+TemporaryReservation: 3. 해당 좌석 유저가 임시예약 여부 요청
+	TemporaryReservation-->>-Payment: 4. 임시예약 여부 반환
+	Payment->>Payment: 5. 결제 정보 생성
+	Payment->>+Point: 6. 포인트 사용 요청
+	Point->>+PointHistory: 7. 포인트 사용 History 생성 요청
+	PointHistory->>-Point: 8. history 생성 응답
+	Point-->>-Payment: 9. 포인트 사용 여부 반환
+	Payment->>+TemporaryReservation: 10. 결제 완료로 인해 콘서트 좌석 확정 Process 진행
+	TemporaryReservation->>+Reservation: 11. 임시예약 좌석 확정 Process 진행
+	Reservation->>Reservation: 12. 예약 자리 확정
+	Reservation->>ConcertToken: 13.  좌석 구매로 인해 대기열에 사용한 자원 정리
+	ConcertToken->>ConcertToken: 14. 토큰 만료로 삭제 or 만료 처리
+	ConcertToken->>ConcertQueue: 15. 토큰 만료 or 삭제시  대기열 자원 삭제 요청 
+	ConcertQueue->>ConcertQueue: 16. 해당 토큰에 대한 자원 정리
+	ConcertQueue-->>Payment: 17. 결제 완료 후속처리 완료
+	Payment-->>-User: 18. 결제 완료 여부 반환
+```
 </details>
 
-합격 뱃지 <br>
-<a href="https://hhpluscertificateofcompletion.oopy.io/">
-  <img src="https://static.spartacodingclub.kr/hanghae99/plus/completion/badge_purple.svg" />
-</a>
+## ERD
+<details>
+    <summary>ERD</summary>
 
+TemporaryReservation: 임시예약 테이블   
+Reservation: 예약 테이블
+
+위 두테이블은 Concert와 ConcertSeries, ConcertSheet의 데이터들을 가질 수 있습니다.   
+이를 위해 반정규화를 진행하려 하였으나 개발하면서 계속 수정이 이뤄질거 같아 참조 관계를 중점으로 ERD작성하였습니다.
+
+![ERD](./images/erd.png)
+</details>
+
+## API 정의서
+<details>
+    <summary>Swagger</summary>
+
+### [Swagger 바로가기](http://localhost:8080/swagger-ui/index.html#/)
+### Waiting Token
+![swagger_waiting_token.png](./images/swagger_waiting_token.png)
+### Waiting Queue
+![swagger_waiting_queue.png](./images/swagger_waiting_queue.png)
+### Concert
+![swagger_concert.png](./images/swagger_concert.png)
+### Point
+![swagger_point.png](./images/swagger_point.png)
+### Temporary Reservation
+![swagger_temporary_reservation.png](./images/swagger_temporary_reservation.png)
+### Reservation
+![swagger_reservation.png](./images/swagger_reservation.png)
+### Payment
+![swagger_payment.png](./images/swagger_payment.png)
+</details>
+
+## [서비스 동시성 이슈 분석 및 조치](https://lee-geon-exception.tistory.com/37)
+## [서비스 성능향상을 위한 Cache 적용 및 성능테스트](https://lee-geon-exception.tistory.com/38)
+## [Rdb대기열 성능 분석과 Redis를 활용한 리펙토링](https://lee-geon-exception.tistory.com/39)
+## [Event를 활용한 서비스 관심사 분리](https://lee-geon-exception.tistory.com/40)
+## [쿼리 성능향상을 위한 Index 분석 및 생성](https://lee-geon-exception.tistory.com/41)
+## [Concert 운영시 발생할 장애 분석 및 대응](https://lee-geon-exception.tistory.com/44)
+
+## 서버구축 챕터 마무리 회고록 작성
+<details>
+    <summary>서버구축 챕터 마무리 회고록 작성 </summary>
+
+서버를 분석하고, 이를 통해 설계를 해보는 좋은 경험이였다 생각합니다.   
+인생이 그렇듯 한번 설계한 것이 끝까지 그대로 가는 것은 쉽지 않았고, 상황에 맞춰 수정을 해주며 구현을 하였습니다.   
+
+생소한 대기열이라는 기능을 만나 대기열이 필요한 이유에 대해 이해를 하며,   
+서버 설계시 유지보수 및 확장성 위해 도메인 설계 및 레이어 분리등을 통해 충족을 하려 노력하였으며,   
+최대한 간단한 로직을 위해 반정규화를 진행한 경험도 좋은것 같습니다.
+
+마지막으로 Logging과 Error를 핸들링 해보며 서버를 운영을 할 때 필요한 로그들이란 무엇인가,   
+왜 로그가 필요하고 에러를 핸들링 하는 것이 중요한가에 대해 고민을 해볼 수 있는 좋은 시간이였습니다.
+
+이 서버구축 챕터를 통해 레이어 분리와, 테스트 코드 작성, 왜 실패 케이스를 중요하게 관리해야하는지 알 수 있었습니다.
+
+실패케이스를 다룬다는 것은 해당 상황을 인지하고, 해당 실패 케이스들에 대해서는 대비가 되어있다는 것을 검증하는 것이라 생각합니다.
+</details>
