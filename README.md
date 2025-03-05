@@ -229,13 +229,13 @@ Reservation: 예약 테이블
 ![swagger_payment.png](./images/swagger_payment.png)
 </details>
 
-## [Lock을 이용한 상황 별 테스트] (https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C)
+## [Lock을 이용한 상황 별 테스트](https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C)
 
-## [Redis Cache를 이용한 캐싱 시스템 적용] (https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90-)
+## [Redis Cache를 이용한 캐싱 시스템 적용](https://velog.io/@mabest123/Redis-Cache%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90-)
 
-## [데이터베이스 Index 적용] (https://velog.io/@mabest123/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%9D%B8%EB%8D%B1%EC%8A%A4Index-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A6%AC)
+## [데이터베이스 Index 적용](https://velog.io/@mabest123/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%9D%B8%EB%8D%B1%EC%8A%A4Index-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A6%AC)
 
-## [Kafka를 이용한 분산 트랜잭션 적용] (https://velog.io/@mabest123/Kafka%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B6%84%EC%82%B0-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%B4%EB%9E%80)
+## [Kafka를 이용한 분산 트랜잭션 적용](https://velog.io/@mabest123/Kafka%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B6%84%EC%82%B0-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%B4%EB%9E%80)
 
 ## 서버구축 챕터 마무리 회고록 작성
 <details>
