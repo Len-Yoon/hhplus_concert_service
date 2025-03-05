@@ -229,12 +229,7 @@ Reservation: 예약 테이블
 ![swagger_payment.png](./images/swagger_payment.png)
 </details>
 
-## [서비스 동시성 이슈 분석 및 조치](https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C)
-## [서비스 성능향상을 위한 Cache 적용 및 성능테스트](https://lee-geon-exception.tistory.com/38)
-## [Rdb대기열 성능 분석과 Redis를 활용한 리펙토링](https://lee-geon-exception.tistory.com/39)
-## [Event를 활용한 서비스 관심사 분리](https://lee-geon-exception.tistory.com/40)
-## [쿼리 성능향상을 위한 Index 분석 및 생성](https://lee-geon-exception.tistory.com/41)
-## [Concert 운영시 발생할 장애 분석 및 대응](https://lee-geon-exception.tistory.com/44)
+## Lock을 이용한 상황 별 테스트 (https://velog.io/@mabest123/JPA%EC%9D%98-%EB%82%99%EA%B4%80%EC%A0%81-%EB%9D%BD-%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-feat.-%ED%95%AD%ED%95%B4-%ED%94%8C%EB%9F%AC%EC%8A%A4-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B3%BC%EC%A0%9C)
 
 ## 서버구축 챕터 마무리 회고록 작성
 <details>
